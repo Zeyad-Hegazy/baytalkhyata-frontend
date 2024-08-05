@@ -1,0 +1,70 @@
+////////* ###### globalForms  ###### */
+.color-header,
+.gradient-header {
+  .main-header-center {
+    .form-control {
+      border: 1px solid $transparent-border !important;
+    }
+  }
+  .header-icon-svgs {
+    color: #7b8191;
+  }
+}
+.dark-header {
+  .main-header-center {
+    .form-control {
+      border: 1px solid #3c3c4c !important;
+    }
+  }
+}
+//
+.was-validated .is-loading > .form-control:valid,
+.is-loading > .form-control.is-invalid {  
+  padding-inline-end: calc(1.5em + 0.75rem + 25px);
+}
+//
+.input-group .form-control.is-invalid {
+  z-index: 1;
+}
+
+//////datepicker////
+.react-datepicker-wrapper {
+  width: 78% !important;
+}
+.react-datepicker__header {
+  background-color: $primary;
+  color: $white;
+}
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+  color: $white;
+}
+.react-datepicker__day--selected {
+  background-color: $primary;
+}
+
+.react-datepicker__day:hover,
+.react-datepicker__month-text:hover,
+.react-datepicker__quarter-text:hover,
+.react-datepicker__year-text:hover {
+  border-radius: 0.3rem;
+  background-color: $primary !important;
+}
+.input-group.file-browser.input-group-rtl {
+  .input-group-text.btn {
+    z-index: 0;
+  }
+}
+
+.custom-control-label {
+  color: $default-color;
+  font-weight: 400;
+}
+.rmsc {
+  --rmsc-selected: var(--primary-bg-color) !important;
+  .dropdown-content {
+    .selected {
+      color: #fff !important;
+    }
+  }
+}

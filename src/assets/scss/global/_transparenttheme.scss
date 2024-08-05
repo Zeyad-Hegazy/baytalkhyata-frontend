@@ -1,0 +1,334 @@
+/* ###### globalTransparenttheme  ###### */
+///
+.transparent-theme {
+  .card {
+    color: #fff !important;
+  }
+  .table td{
+    color: #fff !important;
+  }
+  .table th{
+    color: #fff !important;
+  }
+  .apexcharts-gridline {
+    stroke: rgba(255,255,255,0.05);
+  }
+  .optiondots .btn{
+    color:$white !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+  }
+  
+  .main-sidebar-header {
+    backdrop-filter: blur(15px) !important;
+  }
+  //
+  .sidebar-right {
+    .tabs-menu .nav-item a {
+      border: 1px solid $transparent-border;
+    }
+  }
+
+  //
+  .text-transparent {
+    color: $white !important;
+  }
+  //
+  .rmsc .dropdown-container {
+    background: $transparent-theme;
+    border: 1px solid $transparent-border !important;
+  }
+  .rmsc {
+    --rmsc-main: #000;
+    --rmsc-selected: #38cab3;
+    --rmsc-hover: #38cab3;
+    --rmsc-bg: #38cab3;
+    --rmsc-gray: #fff;
+  }
+  // .MuiTreeItem-iconContainer {
+  //   svg {
+  //     color: $white !important;
+  //   }
+  // }
+  // .MuiTreeItem-label{
+  //   color:$white
+  // }
+
+  .MuiSlider-markLabel, .dark-theme .MuiSlider-valueLabelLabel {
+    color: $dark-color !important;
+  }
+  .border-bottom {
+    border-bottom: 1px solid rgba(234, 236, 241, 0.2) !important;
+    }
+    .border-0 {
+    border: 0 !important;
+    }
+  .selectpage{
+    background: $transparent-theme;
+    color: #fff;
+  }
+  .main-sidebar-header {
+    backdrop-filter: blur(15px) !important;
+  }
+  .apexcharts-tooltip.apexcharts-theme-light {
+    border: 1px solid $transparent-border !important;
+    background: $transparent-theme !important;
+    .apexcharts-tooltip-title {
+      background: $transparent-theme !important;
+      border-bottom: 1px solid $transparent-border !important;
+    }
+  }
+  .deleted-table {
+    select {
+      background-color: $transparent-theme;
+      color: #fff;
+      border: 1px solid $transparent-border;
+    }
+  }
+ 
+}
+
+  /* ###### globalTransparenttheme  ###### */
+  
+.transparent-theme {
+  .tablebutton {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+  .list-group-item-action:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  .Select2__menu {
+    background-color: $transparent-body !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 0 10px rgba(28, 39, 60, 0.1);
+    div,
+    li,
+    .Select2__single-value {
+      &.active,
+      .Select2__option--is-selected {
+        background: $primary-dark !important;
+      }
+    }
+  }
+  .Select2__option--is-selected,
+  .Select2__option--is-focused {
+    background: rgba(0, 0, 0, 0.1) !important;
+  }
+  .Select2__placeholder {
+    color: rgba(255,255,255,0.5) !important;
+  }
+  .PhoneInputCountry {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff !important;
+    select {
+      option {
+        color: #fff !important;
+      }
+    }
+  }
+  .PhoneInputInput {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    background-color: transparent;
+    color: #fff !important;
+    &::-webkit-input-placeholder {
+      color: rgba(255,255,255,0.2);
+    }
+  }
+
+  .filepond--drop-label {
+    background-color: transparent;
+  }
+  .card {
+    &.bg-info {
+      background-color: $info !important;
+      color: #fff !important;
+    }
+    &.bg-warning {
+      background-color: $warning !important;
+      color: #fff !important;
+    }
+  }
+  svg:where(.text-primary) {
+    color: #fff !important;
+  }
+  .rti--container {
+    --rti-bg: none;
+    border-color: rgba(255,255,255,0.1) !important;
+  } 
+  .Select2__control {
+    background-color: transparent !important;
+    color: #fff;
+    border-color: rgba(255,255,255,0.1) !important;
+  }
+  .tabs-style-4 .nav .nav-item a {
+    background-color: rgba(255,255,255,0.1);
+    color: #fff;
+    border-color: rgba(255,255,255,0.1);
+    &:is(.active, :hover) {
+      background-color:  $primary !important;
+    }
+  }
+  .tabs-style-3 .nav.panel-tabs li button {
+    background-color: rgba(255,255,255,0.1);
+    color: #fff;
+    border-color: rgba(255,255,255,0.1);
+    &:is(.active, :hover) {
+      background-color:  $primary !important;
+    }
+  }
+  .accordion-item {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+  }
+  .accordiondclose .accordion-header button.collapsed {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    color: #fff;
+  }
+  .accordiondclose .accordion-header button {
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .accordion-button:not(.collapsed) {
+    color: #fff !important;
+  }
+  .borders {
+    border-block-end: 1px solid rgba(255, 255, 255, 0.1);
+    border-block-start: 0px solid rgba(255, 255, 255, 0.1);
+    border-inline-start: 1px solid rgba(255, 255, 255, 0.1);
+    border-inline-end: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  div:where(.swal2-container, .swal2-popup) {
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+  }
+  .borderrigth {
+    border-inline-end: 0px solid rgba(255, 255, 255, 0.1);
+  }
+  .Basicwizard {
+    border-block-start: 1px solid rgba(255,255,255,0.1);
+    border-block-end: 1px solid rgba(255,255,255,0.1);
+  }
+  .steps.bordera .btn{
+    &:not(.active) {
+      i {
+        color: #fff;
+      }
+    }
+  }
+  #accordion11 .panel-heading2 button {
+    background: rgba(255,255,255,0.1) !important;
+    color: #fff !important;
+  }
+  .border-top {
+    border-top: 1px solid rgba(255,255,255, 0.1)!important;
+  }
+  .transparent-theme .border-bottom {
+    border-bottom: 1px solid rgba(234, 236, 241, 0.2) !important;
+  }
+  .btn {
+    color: #fff;
+  }
+  .main-chat-list .media.selected {
+    border-block-start-color: rgba(255,255,255, 0.1);
+    border-block-end-color: rgba(255,255,255, 0.1);
+  }
+  .productdesc {
+    .tabs-menu1 .nav-tabs {
+      button {
+        background-color: $primary;
+        color: #fff !important;
+        &:not(.avtive) {
+          background-color: rgba(255,255,255,0.05);
+        }
+      }
+    } 
+  }
+  #checkoutsteps .wizard-wrapper {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .onoffswitch2-checkbox:checked + .onoffswitch-label2, .onoffswitch2-checkbox:checked + .onoffswitch2-label:before {
+    background-color: #38cab3;
+  }
+  .main-signup-header .form-control {
+    color: #14112d;
+    font-weight: 500;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  .form-control {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+  }
+  .bordera {
+    border-right: 1px solid rgba(255,255,255,0.1)
+  }
+  .sun-editor {
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    .se-toolbar {
+      background: rgba(0, 0, 0, 0.3) !important;
+      outline: 1px solid rgba(255, 255, 255, 0.15) !important;
+    }
+    .se-btn-module-border {
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .se-wrapper {
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    button {
+      color: #fff;
+    }
+    .se-resizing-bar.sun-editor-common {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+    .se-resizing-bar {
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+    
+  }
+  .sun-editor-editable {
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    color: #fff;
+  }
+  .filepond--drop-label {
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    color: #fff;
+  }
+  .Select2__single-value {
+    color: #fff;
+  }
+
+  .productdesc .tabs-menu1 .nav-tabs  .nav-link.active {
+    border-block-end: 2px solid $primary !important;
+    background-color: transparent !important;
+    border-inline-end-color: transparent !important;
+    border-inline-start-color: transparent !important;
+    border-block-start-color: transparent !important;
+  }
+
+  .todo-widget-header .main-header-profile span {
+    color: #fff;
+  }
+  #accordion11 .panel-body {
+    border: 1px solid $transparent-border !important;
+  }
+  .custom-control .form-control:disabled {
+    background-color: transparent !important;
+    border: 0 !important;
+  }
+  .custom-control-label {
+    color: $dark-color;
+  }
+
+  .card.customs-cards {
+    border-block-end-color: $transparent-border !important;
+  }
+
+  .btn-success-light {
+    color: #fff !important;
+  }
+  .btn-danger-light {
+    color: #fff !important;
+  }
+}

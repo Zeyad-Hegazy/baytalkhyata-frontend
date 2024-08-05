@@ -1,0 +1,627 @@
+.dark-theme{
+  .card {
+    color: #fff !important;
+  }
+  .table td{
+    color: #fff !important;
+  }
+  .table th{
+    color: #fff !important;
+  }
+  .apexcharts-gridline {
+    stroke: rgba(255,255,255,0.05);
+  }
+  .optiondots .btn{
+    color:$white !important;
+    border: 1px solid $dark-border !important;
+  }
+  .selectpage {
+    background-color: #373d50;
+    color: #edf0f5;
+    
+  }
+  .borders {
+    border-block-end: 1px solid $dark-border;
+    border-block-start: 0px solid $dark-border;
+    border-inline-start: 1px solid $dark-border;
+    border-inline-end: 1px solid $dark-border;
+  }
+  .MuiSlider-markLabel {
+    color: #edf0f5 !important;
+  }
+  .main-mail-subject span {
+    color: rgba(255, 255, 255, 0.6);
+ }
+ .Select2__menu {
+  z-index: 9;
+}
+// .form-control{
+//   border: 1px solid $dark-border !important;
+// }
+.pricing-tabs .nav-price .nav-item a {
+  background: $dark-theme;
+  &.active {
+    background-color: $primary;
+    color: #fff;
+  }
+}
+.pricing-tabs .nav-price {
+  border: 1px solid $dark-border;
+} 
+.Basicwizard {
+  border-block-start: 1px solid $dark-border;
+  border-block-end: 1px solid $dark-border;
+}
+
+.basicsteps {
+  .btn {
+    &.active {
+      .number {
+        background-color: $primary !important;
+      } 
+      i {
+        color: $primary !important;
+      }
+    }
+    .number {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    } 
+    i {
+      color: rgba(255, 255, 255, 0.5) !important;
+    }
+  }
+}
+.horwizard{
+  &.active {
+    .number {
+      background-color: $primary !important;
+    } 
+    i {
+      color: $primary !important;
+    }
+  }
+  .number {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  } 
+  i {
+    color: rgba(255, 255, 255, 0.5) !important;
+  }
+}
+.nav-tabs .nav-link {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+.Select2__menu {
+  background-color: $dark-theme;
+  border: 1px solid $dark-border;
+}
+
+.Select2__option--is-selected,
+.Select2__option--is-focused {
+  background: $dark-theme !important;
+  color: var(--dark-color) !important;
+}
+.Select2__option:hover {
+  background:$primary-dark !important;
+}
+.Select2__control {
+  background-color: $dark-body;
+  color: $dark-color;
+}
+.Select2__input-container {
+  color: $dark-color;
+}
+
+.Select2__placeholder {
+  color: rgba(255,255,255,0.5) !important;
+}
+
+.Select2__control {
+  border-color: rgba(255,255,255,0.1) !important;
+}
+
+.Select2__single-value{
+  color:var(--dark-color);
+  }
+  .Select2__multi-value,
+  .filepond--root .filepond--drop-label{
+  background-color:$dark-body;
+  color: rgba(255, 255, 255, 0.7);
+  }
+  .Select2__multi-value__label{
+  color: rgba(255, 255, 255, 0.7);
+  }
+  .rmsc .dropdown-container {
+    background: $dark-theme;
+  }
+
+  .rmsc {
+    --rmsc-main: #000;
+    --rmsc-selected: #38cab3;
+    --rmsc-hover: #38cab3;
+    --rmsc-bg: #2a2e3f;
+    --rmsc-gray: #fff;
+    --rmsc-border: rgba(255, 255, 255, 0.1);
+  }
+  .rmsc .dropdown-container:focus-within {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: none !important;
+  }
+  .PhoneInputInput {
+    background: $dark-theme;
+    border-color: $dark-border !important;
+    color: $dark-color;
+  }
+  .PhoneInputCountry {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid $dark-border !important;
+    border-inline-end: 0px solid $dark-border !important;
+  }
+
+  //editor
+  .ql-snow.ql-toolbar .ql-picker-label.ql-active {
+    background-color: $dark-body;
+  }
+  .sun-editor .se-controller-link, .sun-editor .se-controller-table, .sun-editor .se-controller-table-cell {
+    background-color: $dark-body;
+  }
+  .sun-editor .se-arrow.se-arrow-up:after {
+    border-bottom-color: $dark-border ;
+  }
+  .sun-editor,
+.se-btn-module-border,
+.se-resizing-bar {
+  border: 1px solid $dark-border !important;
+  background-color: $dark-body;
+}
+.sun-editor .se-toolbar {
+  outline: 1px solid $dark-border;
+}
+.sun-editor .se-svg, .sun-editor button>svg{
+  fill:$dark-color;
+}
+.sun-editor .se-toolbar {
+  background-color: $dark-theme;
+  outline: 1px solid $dark-border !important;
+}
+.sun-editor {
+  border: 1px solid $dark-border;
+}
+.sun-editor button {
+  color:$dark-color;
+  &:hover {
+    background-color: $dark-body !important;
+  }
+}
+.sun-editor .se-btn-list.default_value{
+  background-color: $dark-theme !important;
+  border-top-color: $dark-border;
+  border-bottom-color:$dark-border;
+}
+.ql-container.ql-snow,.ql-toolbar.ql-snow,.sun-editor .se-selector-table{
+  border: 1px solid $dark-border !important; 
+}  
+.sun-editor .se-list-layer,.sun-editor .se-btn:enabled.on,.sun-editor .se-selector-table{
+  background-color:$dark-body;
+}
+.sun-editor .se-btn-list:focus, .sun-editor .se-btn-list:hover{
+  background-color:$dark-theme;
+}
+.sun-editor .se-list-layer,.sun-editor .se-btn:enabled.on,.sun-editor-editable table td, .sun-editor-editable table th,
+.react-datepicker{
+  border-color:$dark-body ;
+}
+.sun-editor-editable {
+  background-color: $dark-theme;
+}
+.sun-editor-editable * {
+  color: $dark-color;
+}
+.sun-editor .se-resizing-bar .se-navigation {
+  background-color:$dark-theme;
+}
+.sun-editor .se-dialog .se-dialog-inner .se-dialog-content {
+  background-color: $dark-theme;
+  color: $dark-color;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  .se-dialog-tabs {
+    border-bottom: 1px solid $dark-border;
+  }
+  .se-btn-primary {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}
+.sun-editor .se-dialog .se-dialog-inner .se-dialog-header {
+  border-bottom: 1px solid $dark-border;
+}
+.sun-editor .se-dialog-tabs button {
+  border-right: 1px solid $dark-border;
+  background-color: $dark-theme;
+  &.active {
+    background-color: $dark-body;
+  }
+}
+.sun-editor .se-dialog {
+  button, input, label {
+    color: $dark-color;
+  }
+}
+.sun-editor .se-dialog .se-dialog-inner .se-dialog-footer {
+border-top: 1px solid $dark-border;
+}
+.sun-editor {
+input, select, textarea {
+  color: $dark-color;
+  border: 1px solid $dark-border;
+  background-color: $dark-body;
+}
+} 
+//rating
+.css-1c99szj-MuiRating-icon {
+  color: rgba(255, 255, 255);
+}
+.bg-warning.card {
+  background-color: $warning !important;
+}
+.bg-info.card {
+  background-color: $info !important;
+}
+//
+.rti--container {
+  background-color: rgba(255,255,255, 0.1) !important;
+  border: 1px solid rgba(255,255,255, 0.05) !important;
+}
+.MuiPaper-root {
+  background-color: $dark-theme;
+  color: #fff;
+  .MuiTypography-root {
+    color: #fff;
+  }
+}
+.checkout-btns {
+  .previous {
+    border: 1px solid $dark-border;
+    color: #fff;
+  }
+}
+.bordera {
+  border-inline-end: 1px solid rgba(255, 255, 255, 0.1);
+} 
+.border-bottom {
+  border-bottom: 1px solid rgba(234, 236, 241, 0.1) !important;
+  }
+  .border-0 {
+  border: 0 !important;
+  }
+  .apexcharts-gridline {
+    stroke: rgba(255,255,255,0.05);
+  }
+  .apexcharts-menu.apexcharts-menu-open {
+    .apexcharts-menu-item:hover {
+      background-color: rgba(255,255,255,0.02) !important;
+    }
+  }
+  .apexcharts-tooltip.apexcharts-theme-light {
+    border: 1px solid $dark-border !important;
+    background: $dark-theme !important;
+    .apexcharts-tooltip-title {
+      background: $dark-theme !important;
+      border-bottom: 1px solid $dark-border !important;
+    }
+  }
+  &.app.sidebar-mini.sidenav-toggled {
+    .app-sidebar {
+      .main-sidebar-header .header-logo .mobile-dark {
+        display: block;
+      }
+    }
+  }
+  .accordion-item {
+    color: $dark-color !important;
+    background-color: $dark-theme;
+  }
+  .accordiondclose .accor .accordion-header button.collapsed {
+    border: 1px solid $dark-border;
+  }
+  .Accordion-Style02 #headingThree3 button {
+     border-block-end: 1px solid $dark-border;
+  }
+  .accordiondclose .accordion-header button {
+    border: 1px solid $dark-border;
+    &.collapsed {
+      color: $dark-color !important;
+      background-color: $dark-theme !important;
+    }
+  }
+  .accordiondclose .panel-heading1 .accordion-header button.collapsed {
+    border: 1px solid $dark-border;
+  }
+  .accordion-button:not(.collapsed) {
+    color: #ffffff !important;
+  }
+  .list-group-item-action:hover, .list-group-item-action:focus {
+      background-color: rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .card.card-secondary {
+    border-block-start: 2px solid #f74f75 !important;
+  }
+  .main-contacts-list{
+    .dropdown-item {
+      background-color: $dark-theme !important;
+    }
+  }
+
+  .btn-list button {
+    color: #f2eeee;
+  }
+
+  // .list-group-item+.list-group-item {
+  //   border-top-width: 0 !important;
+  // }
+
+  .list-group-item-primary {
+    color: $primary !important;
+    background: $primary-02 !important;
+  }
+  
+  .list-group-item-secondary {
+    color: $secondary !important;
+    background-color: rgba(247, 79, 117, 0.13) !important;
+  }
+  
+  .list-group-item-success {
+    color: $success !important;
+    background-color: rgba(26, 156, 134,0.13) !important;
+  }
+  
+  .list-group-item-info {
+    color: $info !important;
+    background-color: rgba(25, 192, 192, 0.13) !important;
+  }
+  
+  .list-group-item-warning {
+    color: $warning !important;
+    background-color: rgba(255, 189, 90,0.13) !important;
+  }
+  
+  .list-group-item-danger {
+    color: $danger !important;
+    background-color: rgba(243, 67, 67,0.13) !important;
+  }
+
+  .tabs-style-4 .nav .nav-item a {
+    background-color: $dark-theme;
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  div:where(.swal2-container) div:where(.swal2-popup) {
+    background: $dark-theme;
+    color: #fff;
+  }
+
+ 
+  .border-top {
+    border-top: 1px solid $dark-border !important;
+  }
+
+  // .border-0 {
+  //   .list-group-item {
+  //     border: 0 !important;
+  //   }
+  // }
+
+  .main-signup-header {
+    .nav-tabs .nav-link.active, 
+    .nav-tabs .nav-link:hover, 
+    .nav-tabs .nav-link:focus {
+      background-color: transparent !important;
+      border-block-start-color: transparent !important;
+      border-inline-start-color: transparent !important;
+      border-inline-end-color: transparent !important;
+      color: $primary;
+    }
+  }
+  .nav-tabs .nav-link.active, .nav-tabs .nav-link:hover, .nav-tabs .nav-link:focus {
+    color: #fff !important;
+}
+
+  .main-signup-header, &.error-page1  {
+    .form-control {
+      color: #fff;
+    }
+  }
+
+  &.error-page1 .form-control:focus {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .tabs-menu1 ul li button {
+    color: #fff;
+  }
+  .tabs-menu1 ul.nav-tabs li button.active {
+    border-block-end: 2px solid $primary !important;
+    color: $primary !important;
+    background-color: transparent !important;
+    border-block-start-color: transparent;
+    border-inline-start-color: transparent;
+    border-inline-end-color: transparent;
+  }
+
+  #checkoutsteps .wizard-wrapper {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .card.customs-cards {
+    border-block-end-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .mail-option .btn {
+    color: #fff;
+  }
+
+  .main-chat-list .media:hover, .main-chat-list .media:focus {
+    border-block-start-color: rgba(255, 255, 255, 0.1);
+    border-block-end-color: rgba(255, 255, 255, 0.1);
+  }
+  .main-chat-list .media.selected {
+    border-block-start-color: rgba(255, 255, 255, 0.1);
+    border-block-end-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .todo-widget-header {
+    .main-header-profile {
+        span {
+          color: #fff;
+      }
+    }
+  }
+
+  #accordion11 {
+    .panel-heading2 {
+      padding: 0px !important;
+      button {
+        background: #2a2e3f !important;
+        color: #eaecf3 !important;
+      }
+    }
+    .panel-body {
+      border-block-start: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+
+  .sidebar .tabs-menu .nav-item a {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: transparent;
+    color: #fff;
+  }
+  .sidebar {
+    .tabs-menu .nav-item .active {
+      background: $primary;
+      border-color: $primary;
+      .side-menu__icon {
+        color: #fff;
+        fill: #fff;
+      }
+    }
+  }
+
+  &.app.sidebar-mini.sidenav-toggled.sidenav-toggled-open .app-sidebar .main-sidebar-header .header-logo .mobile-dark {
+    display: none;
+  }
+
+}
+
+.dark-theme {
+  .card-header.bg-gray-800 {
+    background-color: #555568 !important;
+  }
+  
+  .se-resizing-bar.sun-editor-common {
+    border: 0 !important;
+  }
+  .show>.btn-light.dropdown-toggle:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.08);
+  }
+  .ps .ps__rail-x:hover, .ps .ps__rail-y:hover, .ps .ps__rail-x:focus, .ps .ps__rail-y:focus, .ps .ps__rail-x.ps--clicking, .ps .ps__rail-y.ps--clicking {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .custom-control-label {
+    color: $dark-color;
+  }
+  .latest-tasks .nav-link.active, .latest-tasks .nav-link:hover, .latest-tasks .nav-link:focus {
+    background: transparent !important;
+    color: $primary !important;
+  }
+  .main-chat-list .media:hover, .dark-theme .main-chat-list .media:focus {
+    background-color: var(--primary02);
+  }
+  .main-chat-list .media.selected {
+    background-color: var(--primary02);
+  }
+  .pricing-card:hover {
+    box-shadow: 0px 16px 32px rgba(0, 0, 0, 0.3);
+  }
+  .borderrigth {
+    border-inline-end: 1px solid $dark-border;
+  }
+  .deleted-table {
+    select {
+      background-color: $dark-theme;
+      color: #fff;
+      border: 1px solid $dark-border;
+    }
+  }
+  .dropdown-item:hover, .dropdown-item:focus {
+    color: #fff;
+    background-color: $dark-theme;
+  }
+  .tablebutton {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+  .modal-fullscreen {
+    .modal-header {
+      button[type="button"] {
+        color: #fff;
+      }
+    }
+  }
+  .form-check-input {
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+  .pricing-tabs .nav-price {
+    background-color: $dark-theme;
+  }
+  .react-datepicker {
+    background-color: $dark-theme;
+    color: $dark-color;
+    border: 1px solid $dark-border;
+  }
+  .react-datepicker-popper[data-placement^=bottom] .react-datepicker__triangle::before, .react-datepicker-popper[data-placement^=bottom] .react-datepicker__triangle::after {
+    border-top: none;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+  .react-datepicker__day {
+    color: #fff;
+  }
+  /** form elements **/
+  .Select2__control {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+  }
+  select {
+    color: #fff;
+  }
+  .sun-editor .se-wrapper {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .sun-editor {
+    width: auto;
+    height: auto;
+    box-sizing: border-box;
+    font-family: Helvetica Neue;
+    border: 1px solid #dadada;
+    color: #000;
+  }
+  .main-signup-header .form-control {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+a.text-dark:hover, a.text-dark:focus {
+  color: $dark-color !important;
+}
+}
+.dark-theme .main-signup-header .form-control, 
+.dark-theme.error-page1 .form-control {
+  color: #fff;
+}
+@media (min-width: 992px) {
+  .dark-theme .main-nav-line-chat {
+    border-block-end: 1px solid $dark-border;
+  }
+}
+
