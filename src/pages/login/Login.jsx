@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useDebugValue, useState } from "react";
 import { Button, Col, Form, Row, Alert, Tab, Nav, Card } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { imagesData } from "../../common/commonimages";
 import { logIn } from "../../api/auth";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
+	const dispatch = useDispatch();
 	const [err, setError] = useState("");
 
 	const [data, setData] = useState({
 		email: "Bayt-Alkhyata@gmail.com",
 		password: "1234567890",
 	});
+
 	const { email, password } = data;
 
 	const changeHandler = (e) => {
@@ -21,23 +24,10 @@ const Login = () => {
 	const navigate = useNavigate();
 
 	const loginHandler = async () => {
-		// if (
-		// 	data.email == "Bayt-Alkhyata@gmail.com" &&
-		// 	data.password == "1234567890"
-		// ) {
-		// 	navigate(`/admin/dashboard`);
-		// } else {
-		// 	setError("The Email Doesn't Exist");
-		// 	setData({
-		// 		email: "adminreact@gmail.com",
-		// 		password: "1234567890",
-		// 	});
-		// }
-		// e.preventDafault();
 		const response = await logIn(data);
-
 		if (response.status === 200) {
 			localStorage.setItem("auth", JSON.stringify(response.data.result));
+			dispatch({ type: "login" });
 			navigate(`/admin/dashboard`);
 		}
 	};

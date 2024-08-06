@@ -10,7 +10,7 @@ const App = () => {
 	return (
 		<div>
 			<Routes>
-				<Route index replace path="/authentication/login" element={<Login />} />
+				<Route path="/" element={<Login />} />
 
 				<Route
 					path="/admin"
