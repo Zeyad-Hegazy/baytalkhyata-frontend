@@ -24,6 +24,14 @@ const MENUITEMS = [
 				active: false,
 				selected: false,
 			},
+			{
+				title: "Libirary",
+				path: "/admin/libirary",
+				type: "link",
+				icon: <i className="fa fa-file-pdf"></i>,
+				active: false,
+				selected: false,
+			},
 		],
 	},
 ];

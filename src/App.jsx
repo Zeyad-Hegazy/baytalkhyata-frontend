@@ -4,6 +4,7 @@ import PrivateRoute from "./components/util/PrivateRoute";
 import AdminLayout from "./pages/admin-view/AdminLayout";
 import Dashboard from "./pages/admin-view/Dashboard";
 import Students from "./pages/admin-view/Students";
+import Libirary from "./pages/admin-view/Libirary";
 
 const App = () => {
 	return (
@@ -22,6 +23,10 @@ const App = () => {
 					<Route
 						path="students"
 						element={<PrivateRoute element={<Students />} roles={["admin"]} />}
+					/>
+					<Route
+						path="libirary"
+						element={<PrivateRoute element={<Libirary />} roles={["admin"]} />}
 					/>
 				</Route>
 			</Routes>
