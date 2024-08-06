@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Fragment, useState } from "react";
 import { Button, Form, Modal, Table } from "react-bootstrap";
 import {
@@ -7,6 +8,7 @@ import {
 } from "../../api/admin/students";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteStudent } from "./../../api/admin/students";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export const StudentTable = ({ getAll, contacts }) => {
 	const dispatch = useDispatch();
@@ -103,7 +105,7 @@ export const StudentTable = ({ getAll, contacts }) => {
 					className="btn btn-primary mb-3"
 					onClick={() => setModalShow(true)}
 				>
-					Add New
+					Add New Student
 				</Button>
 				<Table
 					id="delete-datatable"
@@ -152,7 +154,7 @@ export const StudentTable = ({ getAll, contacts }) => {
 			>
 				<Modal.Header>
 					<Modal.Title id="contained-modal-title-vcenter">
-						Add New Row
+						Add New Student
 					</Modal.Title>
 					<Button
 						variant=""
@@ -168,7 +170,7 @@ export const StudentTable = ({ getAll, contacts }) => {
 							type="text"
 							name="fullName"
 							required
-							placeholder="Enter a full name..."
+							placeholder="full name"
 							onChange={handleAddFormChange}
 							className="form-control mb-2 border"
 						/>
@@ -176,7 +178,7 @@ export const StudentTable = ({ getAll, contacts }) => {
 							type="text"
 							name="phone"
 							required
-							placeholder="Enter a phone..."
+							placeholder="phone number"
 							onChange={handleAddFormChange}
 							className="form-control mb-2"
 						/>
@@ -184,7 +186,7 @@ export const StudentTable = ({ getAll, contacts }) => {
 							type="email"
 							name="email"
 							required
-							placeholder="Enter an email..."
+							placeholder="email"
 							onChange={handleAddFormChange}
 							className="form-control mb-2"
 						/>
@@ -192,7 +194,7 @@ export const StudentTable = ({ getAll, contacts }) => {
 							type="password"
 							name="password"
 							required
-							placeholder="password..."
+							placeholder="password"
 							onChange={handleAddFormChange}
 							className="form-control mb-2"
 						/>
@@ -201,7 +203,7 @@ export const StudentTable = ({ getAll, contacts }) => {
 							className="btn btn-primary me-2 wd-100p "
 							type="submit"
 						>
-							Add
+							Add Student
 						</Button>
 					</Form>
 				</Modal.Body>
@@ -332,13 +334,18 @@ const ReadOnlyRow = ({
 					Edit
 				</Button>
 				<Button
-					variant=""
+				
+					variant="outlined"
+					color="error"
 					className="btn btn-danger me-1"
 					type="button"
 					onClick={() => {
 						setDeleteContactId(contact._id);
 						handleShowDeleteModel(true);
+	
 					}}
+					startIcon={<DeleteIcon />}
+
 				>
 					Delete
 				</Button>
