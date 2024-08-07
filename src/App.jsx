@@ -7,6 +7,10 @@ import Students from "./pages/admin-view/Students";
 import Libirary from "./pages/admin-view/Libirary";
 import Toastar from "./components/Toastar";
 import { useSelector } from "react-redux";
+import Store from "./pages/admin-view/Store";
+import Diplomas from "./pages/admin-view/Diplomas";
+import Chat from "./pages/admin-view/Chat";
+import Settings from "./pages/admin-view/Settings";
 
 const App = () => {
 	const toastar = useSelector((state) => state.toastar);
@@ -31,6 +35,22 @@ const App = () => {
 					<Route
 						path="libirary"
 						element={<PrivateRoute element={<Libirary />} roles={["admin"]} />}
+					/>
+					<Route
+						path="store"
+						element={<PrivateRoute element={<Store />} roles={["admin"]} />}
+					/>
+					<Route
+						path="diploma"
+						element={<PrivateRoute element={<Diplomas />} roles={["admin"]} />}
+					/>
+					<Route
+						path="chat"
+						element={<PrivateRoute element={<Chat />} roles={["admin"]} />}
+					/>
+					<Route
+						path="setting"
+						element={<PrivateRoute element={<Settings />} roles={["admin"]} />}
 					/>
 				</Route>
 			</Routes>
