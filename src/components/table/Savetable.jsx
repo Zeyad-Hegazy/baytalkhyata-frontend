@@ -8,7 +8,8 @@ import {
 } from "../../api/admin/students";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteStudent } from "./../../api/admin/students";
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Message } from "@mui/icons-material";
 
 export const StudentTable = ({ getAll, contacts }) => {
 	const dispatch = useDispatch();
@@ -63,6 +64,7 @@ export const StudentTable = ({ getAll, contacts }) => {
 		event.preventDefault();
 		const response = await createStudent(addFormData);
 		dispatch({ type: "ADD_STUDENT", payload: response.data.result });
+		dispatch({ type: "open", payload: { message: response.data.message } });
 		await getAll();
 		setModalShow(false);
 	};
@@ -71,6 +73,7 @@ export const StudentTable = ({ getAll, contacts }) => {
 		event.preventDefault();
 		const response = await updateStudent(editContactId, editFormData);
 		dispatch({ type: "UPT_STUDENT", payload: response.data.result });
+		dispatch({ type: "open", payload: { message: response.data.message } });
 		await getAll();
 		handleCancelClick();
 	};
@@ -91,8 +94,9 @@ export const StudentTable = ({ getAll, contacts }) => {
 	};
 
 	const handleDeleteClick = async (contactId) => {
-		await deleteStudent(contactId);
+		const response = await deleteStudent(contactId);
 		dispatch({ type: "RMV_STUDENT", payload: { id: contactId } });
+		dispatch({ type: "open", payload: { message: response.data.message } });
 		await getAll();
 		setConfirmDeleteShow(false);
 	};
@@ -334,7 +338,6 @@ const ReadOnlyRow = ({
 					Edit
 				</Button>
 				<Button
-				
 					variant="outlined"
 					color="error"
 					className="btn btn-danger me-1"
@@ -342,10 +345,8 @@ const ReadOnlyRow = ({
 					onClick={() => {
 						setDeleteContactId(contact._id);
 						handleShowDeleteModel(true);
-	
 					}}
 					startIcon={<DeleteIcon />}
-
 				>
 					Delete
 				</Button>

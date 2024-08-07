@@ -106,19 +106,22 @@ const Library = () => {
 				pdf: newItemBase64 === "" ? null : newItemBase64,
 			});
 			dispatch({ type: "UPT_LIBITEM", payload: response.data.result });
+			dispatch({ type: "open", payload: { message: response.data.message } });
 		} else {
 			const response = await createPdfItem({
 				title: newItemTitle,
 				pdf: newItemBase64 === "" ? null : newItemBase64,
 			});
 			dispatch({ type: "ADD_LIBITEM", payload: response.data.result });
+			dispatch({ type: "open", payload: { message: response.data.message } });
 		}
 		handleClose();
 	};
 
 	const handleDeleteClick = async () => {
-		await deletePdfFile(deleteItemId);
+		const response = await deletePdfFile(deleteItemId);
 		dispatch({ type: "RMV_LIBITEM", payload: { id: deleteItemId } });
+		dispatch({ type: "open", payload: { message: response.data.message } });
 		setDeleteItemId(null);
 		setConfirmDeleteShow(false);
 	};

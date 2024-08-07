@@ -5,8 +5,12 @@ import AdminLayout from "./pages/admin-view/AdminLayout";
 import Dashboard from "./pages/admin-view/Dashboard";
 import Students from "./pages/admin-view/Students";
 import Libirary from "./pages/admin-view/Libirary";
+import Toastar from "./components/Toastar";
+import { useSelector } from "react-redux";
 
 const App = () => {
+	const toastar = useSelector((state) => state.toastar);
+
 	return (
 		<div>
 			<Routes>
@@ -30,6 +34,7 @@ const App = () => {
 					/>
 				</Route>
 			</Routes>
+			<Toastar openSnackbar={toastar.open} snackbarMessage={toastar.message} />
 		</div>
 		// <div>
 		// 	<Routes>
