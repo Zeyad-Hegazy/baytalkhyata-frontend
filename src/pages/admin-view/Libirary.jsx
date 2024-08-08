@@ -300,10 +300,7 @@ const Library = () => {
 					<p>Are you sure you want to delete this contact?</p>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button
-						variant="danger"
-						onClick={() => handleDeleteClick(deleteItemId)}
-					>
+					<Button variant="danger" onClick={handleDeleteClick}>
 						Delete
 					</Button>
 					<Button onClick={() => setConfirmDeleteShow(false)}>Cancel</Button>
