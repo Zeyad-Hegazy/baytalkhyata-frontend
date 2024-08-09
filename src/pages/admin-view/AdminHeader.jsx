@@ -8,6 +8,7 @@ import { Delete } from "../../common/redux/action";
 import { imagesData } from "../../common/commonimages";
 import { MENUITEMS } from "../../common/sidemenu";
 import * as Switcherdata from "../../common/switcherdata";
+import { logOut } from "../../api/auth";
 
 export default function AdminHeader() {
 	useEffect(() => {
@@ -209,6 +210,13 @@ export default function AdminHeader() {
 		let path = `${import.meta.env.BASE_URL}`;
 		navigate(path);
 	};
+
+	const logoutHandler = async () => {
+		await logOut();
+		await dispatch({ type: "logout" });
+		navigate("/");
+	};
+
 	return (
 		<Fragment>
 			<Navbar
@@ -1360,6 +1368,9 @@ export default function AdminHeader() {
 						</div>
 					</div>
 				</div>
+				<Button style={{ margin: "2rem" }} onClick={logoutHandler}>
+					Logout
+				</Button>
 			</Navbar>
 			<div className="jumps-prevent" style={{ paddingTop: "63px" }}></div>
 		</Fragment>
