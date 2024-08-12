@@ -182,7 +182,6 @@ export default function AdminHeader() {
 			return e.id === id;
 		});
 		setData(comparedata);
-		console.log(comparedata, Data);
 	};
 
 	React.useEffect(() => {

@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 
 const PrivateRoute = ({ element, roles }) => {
 	const dispatch = useDispatch();
-	const authData = useSelector((state) => state.auth);
+	const authData = JSON.parse(localStorage.getItem("auth"));
 
-	if (authData.isLoggedIn) {
-		if (roles && !roles.includes(authData.profile.role)) {
+	if (authData) {
+		if (roles && !roles.includes(authData.user.role)) {
 			return <Navigate to={`/pages/authentication/lockscreen`} replace />;
 		}
 		return element;

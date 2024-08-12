@@ -12,12 +12,7 @@ const auth = (state = INT_STATE, action) => {
 			};
 		case "logout":
 			localStorage.removeItem("auth");
-			return {
-				...state,
-				profile: null,
-				token: "",
-				isLoggedIn: false,
-			};
+			return { ...INT_STATE };
 		default:
 			return state;
 	}
