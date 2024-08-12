@@ -1,3 +1,4 @@
+import Loader from "./components/util/Loader";
 import { Routes, Route } from "react-router-dom";
 import Login from "./pages/login/Login";
 import PrivateRoute from "./components/util/PrivateRoute";
@@ -14,57 +15,70 @@ import Settings from "./pages/admin-view/Settings";
 
 const App = () => {
 	const toastar = useSelector((state) => state.toastar);
+	const isLoading = useSelector((state) => state.loading);
 
 	return (
 		<div>
-			<Routes>
-				<Route path="/" element={<Login />} />
+			{isLoading ? (
+				<Loader />
+			) : (
+				<>
+					<Routes>
+						<Route path="/" element={<Login />} />
 
-				<Route
-					path="/admin"
-					element={<PrivateRoute element={<AdminLayout />} roles={["admin"]} />}
-				>
-					<Route
-						path="dashboard"
-						element={<PrivateRoute element={<Dashboard />} roles={["admin"]} />}
+						<Route
+							path="/admin"
+							element={
+								<PrivateRoute element={<AdminLayout />} roles={["admin"]} />
+							}
+						>
+							<Route
+								path="dashboard"
+								element={
+									<PrivateRoute element={<Dashboard />} roles={["admin"]} />
+								}
+							/>
+							<Route
+								path="students"
+								element={
+									<PrivateRoute element={<Students />} roles={["admin"]} />
+								}
+							/>
+							<Route
+								path="libirary"
+								element={
+									<PrivateRoute element={<Libirary />} roles={["admin"]} />
+								}
+							/>
+							<Route
+								path="store"
+								element={<PrivateRoute element={<Store />} roles={["admin"]} />}
+							/>
+							<Route
+								path="diploma"
+								element={
+									<PrivateRoute element={<Diplomas />} roles={["admin"]} />
+								}
+							/>
+							<Route
+								path="chat"
+								element={<PrivateRoute element={<Chat />} roles={["admin"]} />}
+							/>
+							<Route
+								path="setting"
+								element={
+									<PrivateRoute element={<Settings />} roles={["admin"]} />
+								}
+							/>
+						</Route>
+					</Routes>
+					<Toastar
+						openSnackbar={toastar.open}
+						snackbarMessage={toastar.message}
 					/>
-					<Route
-						path="students"
-						element={<PrivateRoute element={<Students />} roles={["admin"]} />}
-					/>
-					<Route
-						path="libirary"
-						element={<PrivateRoute element={<Libirary />} roles={["admin"]} />}
-					/>
-					<Route
-						path="store"
-						element={<PrivateRoute element={<Store />} roles={["admin"]} />}
-					/>
-					<Route
-						path="diploma"
-						element={<PrivateRoute element={<Diplomas />} roles={["admin"]} />}
-					/>
-					<Route
-						path="chat"
-						element={<PrivateRoute element={<Chat />} roles={["admin"]} />}
-					/>
-					<Route
-						path="setting"
-						element={<PrivateRoute element={<Settings />} roles={["admin"]} />}
-					/>
-				</Route>
-			</Routes>
-			<Toastar openSnackbar={toastar.open} snackbarMessage={toastar.message} />
+				</>
+			)}
 		</div>
-		// <div>
-		// 	<Routes>
-		// 		<Route index replace path="/authentication/login" element={<Login />} />
-
-		// 		<Route path="/admin" element={<AdminLayout />}>
-		// 			<Route path="dashboard" element={<Dashboard />} />
-		// 		</Route>
-		// 	</Routes>
-		// </div>
 	);
 };
 
