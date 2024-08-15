@@ -1,8 +1,9 @@
 import { Button, Card, Col, Form, Row, Modal } from "react-bootstrap";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
 import SunEditor from "suneditor-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
+import { useDropzone } from "react-dropzone";
 
 const Diplomas = () => {
 	const [activeSection, setActiveSection] = useState("1");
@@ -22,12 +23,12 @@ const Diplomas = () => {
 		}
 	};
 
-	const handleFileUpload = (event) => {
-		const file = event.target.files[0];
-		if (file) {
-			setUploadedFile(URL.createObjectURL(file));
-		}
-	};
+	// const handleFileUpload = (event) => {
+	// 	const file = event.target.files[0];
+	// 	if (file) {
+	// 		setUploadedFile(URL.createObjectURL(file));
+	// 	}
+	// };
 
 	const handleTextChange = (event) => {
 		setText(event.target.value);
@@ -36,6 +37,38 @@ const Diplomas = () => {
 	const handleTextEditorClose = () => {
 		setShowTextEditor(false);
 	};
+
+	const handleFileUpload = (acceptedFiles) => {
+		if (acceptedFiles && acceptedFiles.length > 0) {
+			const file = acceptedFiles[0];
+
+			const reader = new FileReader();
+			reader.onloadend = () => {
+				const base64String = reader.result;
+				console.log(base64String);
+			};
+
+			reader.readAsDataURL(file);
+		}
+	};
+
+	const onDrop = useCallback((acceptedFiles) => {
+		handleFileUpload(acceptedFiles);
+	}, []);
+
+	const { getRootProps, getInputProps, isDragActive } = useDropzone({
+		onDrop,
+		accept:
+			activeType === "video"
+				? "video/*"
+				: activeType === "audio"
+				? "audio/*"
+				: activeType === "pdf"
+				? "application/pdf"
+				: activeType === "image"
+				? "image/*"
+				: "*",
+	});
 
 	return (
 		<div className="m-4">
@@ -163,21 +196,22 @@ const Diplomas = () => {
 											<Form>
 												<Form.Group>
 													<Form.Label>Upload {activeType}</Form.Label>
-													<Form.Control
-														type="file"
-														onChange={handleFileUpload}
-														accept={
-															activeType === "video"
-																? "video/*"
-																: activeType === "audio"
-																? "audio/*"
-																: activeType === "pdf"
-																? "application/pdf"
-																: activeType === "image"
-																? "image/*"
-																: "*"
-														}
-													/>
+													<div
+														{...getRootProps()}
+														className={`border-dashed border-2 p-4 rounded-md ${
+															isDragActive ? "bg-gray-200" : "bg-white"
+														}`}
+													>
+														<input {...getInputProps()} />
+														{isDragActive ? (
+															<p>Drop the {activeType} here...</p>
+														) : (
+															<p>
+																Drag 'n' drop a {activeType} file here, or click
+																to select one
+															</p>
+														)}
+													</div>
 												</Form.Group>
 											</Form>
 											{activeType === "text" && (
