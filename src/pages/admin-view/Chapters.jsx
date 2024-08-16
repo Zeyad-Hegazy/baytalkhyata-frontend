@@ -2,10 +2,17 @@ import { Button, Card, Col, Form, Row, Modal } from "react-bootstrap";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
 import SunEditor from "suneditor-react";
 import { useCallback, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
+import { useSelector } from "react-redux";
 
 const Chapters = () => {
+	const { diplomaId } = useParams();
+
+	const diploma = useSelector((state) =>
+		state.diplomas.find((diploma) => diploma._id === diplomaId)
+	);
+
 	const [activeSection, setActiveSection] = useState("1");
 	const [activeType, setActiveType] = useState("video");
 
@@ -138,19 +145,20 @@ const Chapters = () => {
 		<div className="m-4 position-relative">
 			<Pageheader title="Chapters" heading="Main Menu" active="Chapters" />
 
-			<Row className="row">
-				<Col sm={12}>
-					<Card className={`card-primary`}>
-						<Card.Header className=" pb-0">
-							<h5 className="card-title mb-0 pb-0">Card Title</h5>
-						</Card.Header>
-						<Card.Body className={`text-primary`}>
-							BLA BLA BLA BLA BLA BLA
-						</Card.Body>
-					</Card>
-				</Col>
-			</Row>
-
+			{diploma && (
+				<Row className="row">
+					<Col sm={6}>
+						<Card className={`card-primary`}>
+							<Card.Header className=" pb-0">
+								<h5 className="card-title mb-0 pb-0">{diploma.title}</h5>
+							</Card.Header>
+							<Card.Body className={`text-primary`}>
+								{diploma.description}
+							</Card.Body>
+						</Card>
+					</Col>
+				</Row>
+			)}
 			<Row className="mb-4">
 				<Col sm={12}>
 					<Button

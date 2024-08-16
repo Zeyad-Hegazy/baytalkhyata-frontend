@@ -3,9 +3,11 @@ import Pageheader from "../../layout/layoutcomponent/pageheader";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { createDiploma, getDiplomas } from "../../api/admin/diplomas";
+import { useNavigate } from "react-router-dom";
 
 const Diplomas = () => {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -102,7 +104,7 @@ const Diplomas = () => {
 										<div className="d-flex justify-content-between">
 											<h6>
 												Price :{" "}
-												<span className="text-primary">${diploma.price}</span>
+												<span className="text-primary">L.E{diploma.price}</span>
 											</h6>
 											<h6>
 												Total Points :{" "}
@@ -113,7 +115,13 @@ const Diplomas = () => {
 										</div>
 									</Card.Footer>
 									<div className="m-2">
-										<Button>Add Chapter</Button>
+										<Button
+											onClick={() => {
+												navigate("/admin/chapters/" + diploma._id);
+											}}
+										>
+											Add Chapter
+										</Button>
 									</div>
 								</Card>
 							</Col>
