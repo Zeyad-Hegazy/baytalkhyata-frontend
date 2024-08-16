@@ -78,36 +78,36 @@ const Diplomas = () => {
 				</div>
 
 				{diplomas?.length > 0 ? (
-					diplomas.map((diploma) => (
-						<Row className="row" key={diploma._id}>
-							<Col sm={3}>
-								<Card className={`card-primary`}>
+					<Row className="row">
+						{diplomas.map((diploma) => (
+							<Col sm={3} key={diploma._id}>
+								<Card className="card-primary">
 									<Card.Header className="pb-0 d-flex">
 										<h5 className="card-title mb-0 pb-0">{diploma.title}</h5>
 									</Card.Header>
-									<Card.Body className={`text-primary`}>
+									<Card.Body className="text-primary">
 										{diploma.description}
 									</Card.Body>
 									<Card.Footer>
 										<div className="d-flex justify-content-between mb-6">
 											<h6>
-												Total Hours :{" "}
+												Total Hours:{" "}
 												<span className="text-primary">
 													{diploma.totalHours}
 												</span>
 											</h6>
 											<h6>
-												Chapters :{" "}
+												Chapters:{" "}
 												<span className="text-primary">{diploma.chapters}</span>
 											</h6>
 										</div>
 										<div className="d-flex justify-content-between">
 											<h6>
-												Price :{" "}
+												Price:{" "}
 												<span className="text-primary">L.E{diploma.price}</span>
 											</h6>
 											<h6>
-												Total Points :{" "}
+												Total Points:{" "}
 												<span className="text-primary">
 													{diploma.totalPoints}
 												</span>
@@ -125,8 +125,8 @@ const Diplomas = () => {
 									</div>
 								</Card>
 							</Col>
-						</Row>
-					))
+						))}
+					</Row>
 				) : (
 					<Card>
 						<Card.Body>
@@ -135,6 +135,7 @@ const Diplomas = () => {
 					</Card>
 				)}
 			</div>
+
 			<Modal show={showModal} onHide={handleClose}>
 				<Modal.Header closeButton>
 					<Modal.Title>{"Add New Diploma"}</Modal.Title>
