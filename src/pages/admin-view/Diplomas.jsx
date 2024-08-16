@@ -1,9 +1,22 @@
-import { Button, Card, Col, Modal, Row, Form } from "react-bootstrap";
+import { Button, Card, Col, Modal, Row, Form, Dropdown } from "react-bootstrap";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { createDiploma, getDiplomas } from "../../api/admin/diplomas";
+import {
+	createDiploma,
+	getDiplomas,
+	deleteDiploma,
+	updateDiploma,
+} from "../../api/admin/diplomas";
 import { useNavigate } from "react-router-dom";
+
+const formatDate = (isoDate) => {
+	const date = new Date(isoDate);
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, "0");
+	const day = String(date.getDate()).padStart(2, "0");
+	return `${year}-${month}-${day}`;
+};
 
 const Diplomas = () => {
 	const dispatch = useDispatch();
@@ -18,7 +31,14 @@ const Diplomas = () => {
 	}, [dispatch]);
 
 	const diplomas = useSelector((state) => state.diplomas);
+
 	const [showModal, setShowModal] = useState(false);
+	const [confirmDeleteShow, setConfirmDeleteShow] = useState(false);
+
+	const [deleteItemId, setDeleteItemId] = useState(null);
+	const [isEdit, setIsEdit] = useState(false);
+	const [editItemId, setEditItemId] = useState(null);
+
 	const [formState, setFormState] = useState({
 		title: "",
 		description: "",
@@ -50,22 +70,44 @@ const Diplomas = () => {
 
 	const handleSave = async (e) => {
 		e?.preventDefault();
-		// if (isEdit) {
-		// 	const response = await updatePdfFile(editItemId, {
-		// 		title: newItemTitle,
-		// 		pdf: newItemBase64 === "" ? null : newItemBase64,
-		// 	});
-		// 	dispatch({ type: "UPT_LIBITEM", payload: response.data.result });
-		// 	dispatch({ type: "open", payload: { message: response.data.message } });
-		// } else {
-		const response = await createDiploma({
-			...formState,
-			expiresIn: new Date(formState.expiresIn),
-		});
-		dispatch({ type: "ADD_DIPLOMA", payload: response.data.result });
-		dispatch({ type: "open", payload: { message: response.data.message } });
-		// }
+		if (isEdit) {
+			const response = await updateDiploma(editItemId, {
+				...formState,
+				expiresIn: new Date(formState.expiresIn),
+			});
+			dispatch({ type: "UPT_DIPLOMA", payload: response.data.result });
+			dispatch({ type: "open", payload: { message: response.data.message } });
+		} else {
+			const response = await createDiploma({
+				...formState,
+				expiresIn: new Date(formState.expiresIn),
+			});
+			dispatch({ type: "ADD_DIPLOMA", payload: response.data.result });
+			dispatch({ type: "open", payload: { message: response.data.message } });
+		}
 		handleClose();
+	};
+
+	const editItemHandler = (diploma) => {
+		setEditItemId(diploma._id);
+		setFormState({
+			title: diploma.title,
+			description: diploma.description,
+			totalHours: diploma.totalHours,
+			totalPoints: diploma.totalPoints,
+			price: diploma.price,
+			expiresIn: diploma.expiresIn,
+		});
+		setIsEdit(true);
+		setShowModal(true);
+	};
+
+	const handleDeleteClick = async () => {
+		const response = await deleteDiploma(deleteItemId);
+		dispatch({ type: "RMV_DIPLOMA", payload: { id: deleteItemId } });
+		dispatch({ type: "open", payload: { message: response.data.message } });
+		setDeleteItemId(null);
+		setConfirmDeleteShow(false);
 	};
 
 	return (
@@ -82,8 +124,40 @@ const Diplomas = () => {
 						{diplomas.map((diploma) => (
 							<Col sm={3} key={diploma._id}>
 								<Card className="card-primary">
-									<Card.Header className="pb-0 d-flex">
+									<Card.Header
+										className="pb-0"
+										style={{ position: "relative" }}
+									>
 										<h5 className="card-title mb-0 pb-0">{diploma.title}</h5>
+										<div
+											className="d-flex align-items-center px-3 pt-3"
+											style={{ position: "absolute", top: "-10px", right: "0" }}
+										>
+											<Dropdown className="float-end optiondots ms-auto">
+												<Dropdown.Toggle variant="" className="option-dots">
+													<i className="fe fe-more-vertical"></i>
+												</Dropdown.Toggle>
+												<Dropdown.Menu>
+													<Dropdown.Item
+														href="#"
+														className="d-inline-flex align-items-center"
+														onClick={() => editItemHandler(diploma)}
+													>
+														<i className="fe fe-edit me-2"></i> Edit
+													</Dropdown.Item>
+													<Dropdown.Item
+														href="#"
+														className="d-inline-flex align-items-center"
+														onClick={() => {
+															setConfirmDeleteShow(true);
+															setDeleteItemId(diploma._id);
+														}}
+													>
+														<i className="fe fe-trash me-2"></i> Delete
+													</Dropdown.Item>
+												</Dropdown.Menu>
+											</Dropdown>
+										</div>
 									</Card.Header>
 									<Card.Body className="text-primary">
 										{diploma.description}
@@ -138,7 +212,9 @@ const Diplomas = () => {
 
 			<Modal show={showModal} onHide={handleClose}>
 				<Modal.Header closeButton>
-					<Modal.Title>{"Add New Diploma"}</Modal.Title>
+					<Modal.Title>
+						{isEdit ? "Edit Diploma" : "Add New Diploma"}
+					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<Form onSubmit={handleSave}>
@@ -201,9 +277,9 @@ const Diplomas = () => {
 						<Form.Group className="mb-3" controlId="formExpiresIn">
 							<Form.Label>Expires In</Form.Label>
 							<Form.Control
-								type="date" // Use date type
+								type="date"
 								name="expiresIn"
-								value={formState.expiresIn}
+								value={formatDate(formState.expiresIn)}
 								onChange={handleInputChange}
 							/>
 						</Form.Group>
@@ -214,8 +290,31 @@ const Diplomas = () => {
 						Close
 					</Button>
 					<Button variant="primary" onClick={handleSave}>
-						{"Add Diploma"}
+						{isEdit ? "Update Diploma" : "Add Diploma"}
 					</Button>
+				</Modal.Footer>
+			</Modal>
+
+			<Modal
+				show={confirmDeleteShow}
+				onHide={() => setConfirmDeleteShow(false)}
+				size="sm"
+				aria-labelledby="contained-modal-title-vcenter"
+				centered
+			>
+				<Modal.Header closeButton>
+					<Modal.Title id="contained-modal-title-vcenter">
+						Confirm Deletion
+					</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<p>Are you sure you want to delete this contact?</p>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="danger" onClick={handleDeleteClick}>
+						Delete
+					</Button>
+					<Button onClick={() => setConfirmDeleteShow(false)}>Cancel</Button>
 				</Modal.Footer>
 			</Modal>
 		</>
