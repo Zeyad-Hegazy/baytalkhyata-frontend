@@ -6,6 +6,7 @@ import { library } from "./libraryItmes/reducer";
 import { toastar } from "./toastar/reducer";
 import { gifts } from "./store/reducer";
 import { loading } from "./loading/reducer";
+import { diplomas } from "./diplomas/reducer";
 
 const rootred = combineReducers({
 	cartreducer,
@@ -13,6 +14,7 @@ const rootred = combineReducers({
 	auth,
 	library,
 	gifts,
+	diplomas,
 	toastar,
 	loading,
 });

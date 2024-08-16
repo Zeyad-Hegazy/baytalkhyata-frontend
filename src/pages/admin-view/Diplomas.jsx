@@ -1,25 +1,53 @@
 import { Button, Card, Col, Modal, Row, Form } from "react-bootstrap";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
-import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { createDiploma, getDiplomas } from "../../api/admin/diplomas";
 
 const Diplomas = () => {
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const response = await getDiplomas();
+			dispatch({ type: "GET_DIPLOMAS", payload: response.data.result });
+		};
+		fetchData();
+	}, [dispatch]);
+
 	const diplomas = useSelector((state) => state.diplomas);
 	const [showModal, setShowModal] = useState(false);
 	const [formState, setFormState] = useState({
 		title: "",
+		description: "",
+		totalPoints: 0,
+		price: 0,
+		totalHours: 0,
+		expiresIn: "",
 	});
+
+	const handleInputChange = (e) => {
+		const { name, value } = e.target;
+		setFormState((prevState) => ({
+			...prevState,
+			[name]: value,
+		}));
+	};
 
 	const handleClose = () => {
 		setShowModal(false);
-		setFormState({ title: "" });
-		// setNewTitle("");
-		// setNewItemBase64(null);
-		// setIsEdit(false);
-		// setEditItemId(null);
+		setFormState({
+			title: "",
+			description: "",
+			totalPoints: 0,
+			price: 0,
+			totalHours: 0,
+			expiresIn: "",
+		});
 	};
 
-	const handleSave = (e) => {
+	const handleSave = async (e) => {
+		e?.preventDefault();
 		// if (isEdit) {
 		// 	const response = await updatePdfFile(editItemId, {
 		// 		title: newItemTitle,
@@ -28,15 +56,13 @@ const Diplomas = () => {
 		// 	dispatch({ type: "UPT_LIBITEM", payload: response.data.result });
 		// 	dispatch({ type: "open", payload: { message: response.data.message } });
 		// } else {
-		// 	const response = await createPdfItem({
-		// 		title: newItemTitle,
-		// 		pdf: newItemBase64 === "" ? null : newItemBase64,
-		// 	});
-		// 	dispatch({ type: "ADD_LIBITEM", payload: response.data.result });
-		// 	dispatch({ type: "open", payload: { message: response.data.message } });
+		const response = await createDiploma({
+			...formState,
+			expiresIn: new Date(formState.expiresIn),
+		});
+		dispatch({ type: "ADD_DIPLOMA", payload: response.data.result });
+		dispatch({ type: "open", payload: { message: response.data.message } });
 		// }
-		e?.preventDefault();
-		console.log(formState.title);
 		handleClose();
 	};
 
@@ -52,7 +78,7 @@ const Diplomas = () => {
 				{diplomas?.length > 0 ? (
 					diplomas.map((diploma) => (
 						<Row className="row" key={diploma._id}>
-							<Col sm={4}>
+							<Col sm={3}>
 								<Card className={`card-primary`}>
 									<Card.Header className="pb-0 d-flex">
 										<h5 className="card-title mb-0 pb-0">{diploma.title}</h5>
@@ -60,17 +86,31 @@ const Diplomas = () => {
 									<Card.Body className={`text-primary`}>
 										{diploma.description}
 									</Card.Body>
-									<Card.Footer className="d-flex justify-content-between">
-										<h6>
-											Total Hours :
-											<span className="text-primary">
-												${diploma.totalHours}
-											</span>
-										</h6>
-										<h6>
-											Chapters :
-											<span className="text-primary">{diploma.chapters}</span>
-										</h6>
+									<Card.Footer>
+										<div className="d-flex justify-content-between mb-6">
+											<h6>
+												Total Hours :{" "}
+												<span className="text-primary">
+													{diploma.totalHours}
+												</span>
+											</h6>
+											<h6>
+												Chapters :{" "}
+												<span className="text-primary">{diploma.chapters}</span>
+											</h6>
+										</div>
+										<div className="d-flex justify-content-between">
+											<h6>
+												Price :{" "}
+												<span className="text-primary">${diploma.price}</span>
+											</h6>
+											<h6>
+												Total Points :{" "}
+												<span className="text-primary">
+													{diploma.totalPoints}
+												</span>
+											</h6>
+										</div>
 									</Card.Footer>
 									<div className="m-2">
 										<Button>Add Chapter</Button>
@@ -100,7 +140,62 @@ const Diplomas = () => {
 								placeholder="Enter title"
 								name="title"
 								value={formState.title}
-								onChange={(e) => setFormState({ title: e.target.value })}
+								onChange={handleInputChange}
+							/>
+						</Form.Group>
+
+						<Form.Group className="mb-3" controlId="formDescription">
+							<Form.Label>Description</Form.Label>
+							<Form.Control
+								as="textarea"
+								rows={3}
+								placeholder="Enter description"
+								name="description"
+								value={formState.description}
+								onChange={handleInputChange}
+							/>
+						</Form.Group>
+
+						<Form.Group className="mb-3" controlId="formTotalPoints">
+							<Form.Label>Total Points</Form.Label>
+							<Form.Control
+								type="number"
+								placeholder="Enter total points"
+								name="totalPoints"
+								value={formState.totalPoints}
+								onChange={handleInputChange}
+							/>
+						</Form.Group>
+
+						<Form.Group className="mb-3" controlId="formPrice">
+							<Form.Label>Price</Form.Label>
+							<Form.Control
+								type="number"
+								placeholder="Enter price"
+								name="price"
+								value={formState.price}
+								onChange={handleInputChange}
+							/>
+						</Form.Group>
+
+						<Form.Group className="mb-3" controlId="formTotalHours">
+							<Form.Label>Total Hours</Form.Label>
+							<Form.Control
+								type="number"
+								placeholder="Enter total hours"
+								name="totalHours"
+								value={formState.totalHours}
+								onChange={handleInputChange}
+							/>
+						</Form.Group>
+
+						<Form.Group className="mb-3" controlId="formExpiresIn">
+							<Form.Label>Expires In</Form.Label>
+							<Form.Control
+								type="date" // Use date type
+								name="expiresIn"
+								value={formState.expiresIn}
+								onChange={handleInputChange}
 							/>
 						</Form.Group>
 					</Form>
