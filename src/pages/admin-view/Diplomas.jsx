@@ -7,8 +7,30 @@ import { useDropzone } from "react-dropzone";
 
 const Diplomas = () => {
 	const [activeSection, setActiveSection] = useState("1");
-	const [activeType, setActiveType] = useState(null);
+	const [activeType, setActiveType] = useState("video");
+
 	const [uploadedFile, setUploadedFile] = useState(null);
+
+	const [uploadedVideo, setUploadedVideo] = useState({
+		file: null,
+		base64: null,
+	});
+
+	const [uploadedAudio, setUploadedAudio] = useState({
+		file: null,
+		base64: null,
+	});
+
+	const [uploadedPdf, setUploadedPdf] = useState({
+		file: null,
+		base64: null,
+	});
+
+	const [uploadedImage, setUploadedImage] = useState({
+		file: null,
+		base64: null,
+	});
+
 	const [text, setText] = useState("");
 	const [showTextEditor, setShowTextEditor] = useState(false);
 
@@ -45,10 +67,39 @@ const Diplomas = () => {
 			const reader = new FileReader();
 			reader.onloadend = () => {
 				const base64String = reader.result;
-				console.log(base64String);
+
+				switch (activeType) {
+					case "video":
+						setUploadedVideo({
+							file: file,
+							base64: base64String,
+						});
+						break;
+					case "audio":
+						setUploadedAudio({
+							file: file,
+							base64: base64String,
+						});
+						break;
+
+					case "pdf":
+						setUploadedPdf({
+							file: file,
+							base64: base64String,
+						});
+						break;
+
+					case "image":
+						setUploadedImage({
+							file: file,
+							base64: base64String,
+						});
+						break;
+				}
 			};
 
 			reader.readAsDataURL(file);
+			console.log(file);
 		}
 	};
 
@@ -70,8 +121,21 @@ const Diplomas = () => {
 				: "*",
 	});
 
+	const submitLevleHandler = () => {
+		const levelFormate = {
+			level: activeSection,
+			video: uploadedVideo.base64,
+			audio: uploadedAudio.base64,
+			image: uploadedImage.base64,
+			pdf: uploadedPdf.base64,
+			text,
+		};
+
+		console.log(levelFormate);
+	};
+
 	return (
-		<div className="m-4">
+		<div className="m-4 position-relative">
 			<Pageheader title="Diplomas" heading="Main Menu" active="Diplomas" />
 
 			<Row className="row">
@@ -86,6 +150,7 @@ const Diplomas = () => {
 					</Card>
 				</Col>
 			</Row>
+
 			<Row className="mb-4">
 				<Col sm={12}>
 					<Button
@@ -177,6 +242,9 @@ const Diplomas = () => {
 										Add Image
 									</Button>
 								</div>
+								<Button className="m-2 r-0" onClick={submitLevleHandler}>
+									Save
+								</Button>
 							</Col>
 							<Col sm={9}>
 								{activeType && (
@@ -193,27 +261,29 @@ const Diplomas = () => {
 											</div>
 										</Card.Header>
 										<Card.Body className={`text-primary`}>
-											<Form>
-												<Form.Group>
-													<Form.Label>Upload {activeType}</Form.Label>
-													<div
-														{...getRootProps()}
-														className={`border-dashed border-2 p-4 rounded-md ${
-															isDragActive ? "bg-gray-200" : "bg-white"
-														}`}
-													>
-														<input {...getInputProps()} />
-														{isDragActive ? (
-															<p>Drop the {activeType} here...</p>
-														) : (
-															<p>
-																Drag 'n' drop a {activeType} file here, or click
-																to select one
-															</p>
-														)}
-													</div>
-												</Form.Group>
-											</Form>
+											{activeType !== "text" && (
+												<Form>
+													<Form.Group>
+														<Form.Label>Upload {activeType}</Form.Label>
+														<div
+															{...getRootProps()}
+															className={`border-dashed border-2 p-4 rounded-md ${
+																isDragActive ? "bg-gray-200" : "bg-white"
+															}`}
+														>
+															<input {...getInputProps()} />
+															{isDragActive ? (
+																<p>Drop the {activeType} here...</p>
+															) : (
+																<p>
+																	Drag 'n' drop a {activeType} file here, or
+																	click to select one
+																</p>
+															)}
+														</div>
+													</Form.Group>
+												</Form>
+											)}
 											{activeType === "text" && (
 												<Modal
 													show={showTextEditor}
@@ -289,6 +359,7 @@ const Diplomas = () => {
 															variant="primary"
 															onClick={() => {
 																setUploadedFile(null);
+																setText(value);
 																handleTextEditorClose();
 															}}
 														>
@@ -297,38 +368,71 @@ const Diplomas = () => {
 													</Modal.Footer>
 												</Modal>
 											)}
-											{uploadedFile && activeType !== "text" && (
-												<div className="mt-3">
-													{activeType === "video" && (
-														<video controls src={uploadedFile} width="100%" />
-													)}
-													{activeType === "audio" && (
-														<audio controls src={uploadedFile} />
-													)}
-													{activeType === "pdf" && (
+
+											<div className="mt-3">
+												{uploadedVideo.base64 && activeType === "video" && (
+													<>
+														<video controls>
+															<source
+																src={uploadedVideo.base64}
+																type={uploadedVideo.file.type}
+															/>
+														</video>
+														<div className="mt-4">
+															File Size :{" "}
+															{uploadedVideo && uploadedVideo.file.size}
+														</div>
+													</>
+												)}
+												{uploadedAudio.base64 && activeType === "audio" && (
+													<>
+														<audio controls>
+															<source
+																src={uploadedAudio.base64}
+																type={uploadedAudio.file.type}
+															/>
+														</audio>
+														<div className="mt-4">
+															File Size :{" "}
+															{uploadedAudio && uploadedAudio.file.size}
+														</div>
+													</>
+												)}
+												{uploadedPdf.base64 && activeType === "pdf" && (
+													<>
 														<iframe
-															src={uploadedFile}
+															src={uploadedPdf.base64}
 															width="100%"
 															height="600px"
 														/>
-													)}
-													{activeType === "image" && (
+														<div className="mt-4">
+															File Size : {uploadedPdf && uploadedPdf.file.size}
+														</div>
+													</>
+												)}
+												{uploadedImage.base64 && activeType === "image" && (
+													<>
 														<img
-															src={uploadedFile}
+															src={uploadedImage.base64}
 															alt="Preview"
 															className="img-fluid"
 														/>
-													)}
-												</div>
-											)}
-											{activeType === "text" && text && (
-												<div className="mt-3">
-													<h5>Text Preview:</h5>
-													<p>{text}</p>
-												</div>
-											)}
+														<div className="mt-4">
+															File Size :{" "}
+															{uploadedImage && uploadedImage.file.size}
+														</div>
+													</>
+												)}
+												{text && activeType === "text" && (
+													<div className="mt-3">
+														<h5>Text Preview:</h5>
+														<p>
+															<center>{text}</center>
+														</p>
+													</div>
+												)}
+											</div>
 										</Card.Body>
-										<Card.Footer>File Size</Card.Footer>
 									</Card>
 								)}
 							</Col>
@@ -342,24 +446,24 @@ const Diplomas = () => {
 
 export default Diplomas;
 
-<Col sm={12} md={12} lg={4} xl={4}>
-	<Card className=" custom-card">
-		<Card.Header className="d-flex custom-card-header border-bottom-0 ">
-			<h5 className="card-title">Basic Card</h5>
-			<div className="card-options">
-				<Link to="#" className="btn btn-primary btn-sm">
-					Action 1
-				</Link>
-				<Link to="#" className="btn btn-secondary btn-sm ms-2">
-					Action 2
-				</Link>
-			</div>
-		</Card.Header>
-		<Card.Body>
-			Et harum quidem rerum facilis est et expedita distinctio. Nam libero
-			tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
-			minus id quod maxime placeat facere
-		</Card.Body>
-		<Card.Footer className="">This is Basic card footer</Card.Footer>
-	</Card>
-</Col>;
+// <Col sm={12} md={12} lg={4} xl={4}>
+// 	<Card className=" custom-card">
+// 		<Card.Header className="d-flex custom-card-header border-bottom-0 ">
+// 			<h5 className="card-title">Basic Card</h5>
+// 			<div className="card-options">
+// 				<Link to="#" className="btn btn-primary btn-sm">
+// 					Action 1
+// 				</Link>
+// 				<Link to="#" className="btn btn-secondary btn-sm ms-2">
+// 					Action 2
+// 				</Link>
+// 			</div>
+// 		</Card.Header>
+// 		<Card.Body>
+// 			Et harum quidem rerum facilis est et expedita distinctio. Nam libero
+// 			tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
+// 			minus id quod maxime placeat facere
+// 		</Card.Body>
+// 		<Card.Footer className="">This is Basic card footer</Card.Footer>
+// 	</Card>
+// </Col>;
