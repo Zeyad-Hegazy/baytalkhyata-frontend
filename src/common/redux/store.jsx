@@ -18,7 +18,7 @@ import loadingMiddleware from "../../middlewares/loadingMiddleware";
 const persistConfig = {
 	key: "root",
 	storage,
-	whitelist: ["auth", "loading"],
+	whitelist: ["auth", "loading", "chapter"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootred);

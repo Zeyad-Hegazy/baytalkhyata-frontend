@@ -56,7 +56,7 @@ const App = () => {
 								element={<PrivateRoute element={<Store />} roles={["admin"]} />}
 							/>
 							<Route
-								path="chapters/:diplomaId"
+								path="chapters"
 								element={
 									<PrivateRoute element={<Chapters />} roles={["admin"]} />
 								}

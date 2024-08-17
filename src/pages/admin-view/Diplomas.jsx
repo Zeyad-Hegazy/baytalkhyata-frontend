@@ -9,6 +9,7 @@ import {
 	updateDiploma,
 } from "../../api/admin/diplomas";
 import { useNavigate } from "react-router-dom";
+import { createChapter } from "./../../api/admin/chapter";
 
 const formatDate = (isoDate) => {
 	const date = new Date(isoDate);
@@ -38,6 +39,11 @@ const Diplomas = () => {
 	const [deleteItemId, setDeleteItemId] = useState(null);
 	const [isEdit, setIsEdit] = useState(false);
 	const [editItemId, setEditItemId] = useState(null);
+
+	const [chapterTitle, setChapterTitle] = useState("");
+	const [showChapterModal, setShowChapterModal] = useState(false);
+
+	const [diplomaId, setDiplomaId] = useState("");
 
 	const [formState, setFormState] = useState({
 		title: "",
@@ -108,6 +114,16 @@ const Diplomas = () => {
 		dispatch({ type: "open", payload: { message: response.data.message } });
 		setDeleteItemId(null);
 		setConfirmDeleteShow(false);
+	};
+
+	const handleSaveChapter = async () => {
+		const response = await createChapter({
+			title: chapterTitle,
+			diploma: diplomaId,
+		});
+		dispatch({ type: "ADD_CHAPTER", payload: response.data.result });
+		dispatch({ type: "open", payload: { message: response.data.message } });
+		navigate("/admin/chapters");
 	};
 
 	return (
@@ -191,7 +207,8 @@ const Diplomas = () => {
 									<div className="m-2">
 										<Button
 											onClick={() => {
-												navigate("/admin/chapters/" + diploma._id);
+												setShowChapterModal(true);
+												setDiplomaId(diploma._id);
 											}}
 										>
 											Add Chapter
@@ -315,6 +332,46 @@ const Diplomas = () => {
 						Delete
 					</Button>
 					<Button onClick={() => setConfirmDeleteShow(false)}>Cancel</Button>
+				</Modal.Footer>
+			</Modal>
+
+			<Modal
+				show={showChapterModal}
+				onHide={() => {
+					setChapterTitle("");
+					setShowChapterModal(false);
+				}}
+			>
+				<Modal.Header closeButton>
+					<Modal.Title>{"Add New Chapter"}</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<Form onSubmit={handleSaveChapter}>
+						<Form.Group className="mb-3" controlId="formTitle">
+							<Form.Label>Title</Form.Label>
+							<Form.Control
+								type="text"
+								placeholder="Enter title"
+								name="title"
+								value={chapterTitle}
+								onChange={(e) => setChapterTitle(e.target.value)}
+							/>
+						</Form.Group>
+					</Form>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button
+						variant="secondary"
+						onClick={() => {
+							setChapterTitle("");
+							setShowChapterModal(false);
+						}}
+					>
+						Close
+					</Button>
+					<Button variant="primary" onClick={handleSaveChapter}>
+						{"Add Chapter"}
+					</Button>
 				</Modal.Footer>
 			</Modal>
 		</>
