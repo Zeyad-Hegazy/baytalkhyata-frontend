@@ -13,6 +13,7 @@ import Chat from "./pages/admin-view/Chat";
 import Settings from "./pages/admin-view/Settings";
 import Chapters from "./pages/admin-view/Chapters";
 import Diplomas from "./pages/admin-view/Diplomas";
+import Categories from "./pages/admin-view/Categories";
 
 const App = () => {
 	const toastar = useSelector((state) => state.toastar);
@@ -67,6 +68,14 @@ const App = () => {
 									<PrivateRoute element={<Diplomas />} roles={["admin"]} />
 								}
 							/>
+
+							<Route
+								path="categories"
+								element={
+									<PrivateRoute element={<Categories />} roles={["admin"]} />
+								}
+							/>
+
 							<Route
 								path="chat"
 								element={<PrivateRoute element={<Chat />} roles={["admin"]} />}

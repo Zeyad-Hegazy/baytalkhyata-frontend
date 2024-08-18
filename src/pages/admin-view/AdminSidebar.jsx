@@ -41,6 +41,14 @@ const MENUITEMS = [
 				selected: false,
 			},
 			{
+				title: "Categories",
+				path: "/admin/categories",
+				type: "link",
+				icon: <i className="fa fa-list"></i>,
+				active: false,
+				selected: false,
+			},
+			{
 				title: "Diplomas",
 				path: "/admin/diplomas",
 				type: "link",
