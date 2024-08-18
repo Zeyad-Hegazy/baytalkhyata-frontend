@@ -8,6 +8,7 @@ import { gifts } from "./store/reducer";
 import { loading } from "./loading/reducer";
 import { diplomas } from "./diplomas/reducer";
 import { chapter } from "./chapter/reducer";
+import { categories } from "./categories/reducer";
 
 const rootred = combineReducers({
 	cartreducer,
@@ -17,6 +18,7 @@ const rootred = combineReducers({
 	gifts,
 	diplomas,
 	chapter,
+	categories,
 	toastar,
 	loading,
 });
