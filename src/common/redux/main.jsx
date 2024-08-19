@@ -9,6 +9,7 @@ import { loading } from "./loading/reducer";
 import { diplomas } from "./diplomas/reducer";
 import { chapter } from "./chapter/reducer";
 import { categories } from "./categories/reducer";
+import { categoryItems } from "./categoryItems/reducer";
 
 const rootred = combineReducers({
 	cartreducer,
@@ -19,6 +20,7 @@ const rootred = combineReducers({
 	diplomas,
 	chapter,
 	categories,
+	categoryItems,
 	toastar,
 	loading,
 });
