@@ -1,4 +1,13 @@
-import { Button, Card, Col, Modal, Row, Form, Dropdown } from "react-bootstrap";
+import {
+	Button,
+	Card,
+	Col,
+	Modal,
+	Row,
+	Form,
+	Dropdown,
+	Collapse,
+} from "react-bootstrap";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -126,6 +135,14 @@ const Diplomas = () => {
 		navigate("/admin/chapters");
 	};
 
+	const [openCards, setOpenCards] = useState({});
+
+	const toggleCollapse = (id) => {
+		setOpenCards((prevState) => ({
+			...prevState,
+			[id]: !prevState[id],
+		}));
+	};
 	return (
 		<>
 			<div className="m-4 position-relative">
@@ -188,7 +205,9 @@ const Diplomas = () => {
 											</h6>
 											<h6>
 												Chapters:{" "}
-												<span className="text-primary">{diploma.chapters}</span>
+												<span className="text-primary">
+													{diploma.chapters.length}
+												</span>
 											</h6>
 										</div>
 										<div className="d-flex justify-content-between">
@@ -203,6 +222,36 @@ const Diplomas = () => {
 												</span>
 											</h6>
 										</div>
+										<Button
+											variant="link"
+											onClick={() => toggleCollapse(diploma._id)}
+											aria-controls={`chapters-collapse-${diploma._id}`}
+											aria-expanded={openCards[diploma._id]}
+											className="mt-2"
+										>
+											{openCards[diploma._id]
+												? "Hide Chapters ▲"
+												: "Show Chapters ▼"}
+										</Button>
+										<Collapse in={openCards[diploma._id]}>
+											<div
+												id={`chapters-collapse-${diploma._id}`}
+												className="mt-3"
+											>
+												<ul className="list-unstyled">
+													{diploma.chapters.length > 0 ? (
+														diploma.chapters.map((chapter, index) => (
+															<li key={index}>
+																{"- Chapter "} {index + 1} {" :"}{" "}
+																{chapter.title}
+															</li>
+														))
+													) : (
+														<li>No chapters available</li>
+													)}
+												</ul>
+											</div>
+										</Collapse>
 									</Card.Footer>
 									<div className="m-2">
 										<Button
