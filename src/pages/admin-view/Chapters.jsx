@@ -2,10 +2,12 @@ import { Button, Card, Col, Form, Row, Modal, Spinner } from "react-bootstrap";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
 import SunEditor from "suneditor-react";
 import { useCallback, useEffect, useReducer, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import { useDispatch, useSelector } from "react-redux";
 import { addLevelToChapter } from "../../api/admin/chapter";
+
+import Quiz from "./Quiz";
 
 const formatBytes = (bytes) => {
 	const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
@@ -264,7 +266,7 @@ const Chapters = () => {
 				</Col>
 			</Row>
 
-			{state.activeSection && (
+			{state.activeSection !== "Five" && (
 				<Card className={`card-primary`}>
 					<Card.Header className="pb-0">
 						<h5 className="card-title mb-0">
@@ -573,7 +575,13 @@ const Chapters = () => {
 													<div className="mt-3">
 														<h5>Text Preview:</h5>
 														<p>
-															<center>{state.text}</center>
+															<center>
+																<span
+																	dangerouslySetInnerHTML={{
+																		__html: state.text,
+																	}}
+																/>
+															</center>
 														</p>
 													</div>
 												)}
@@ -588,6 +596,7 @@ const Chapters = () => {
 					</Card.Body>
 				</Card>
 			)}
+			{state.activeSection === "Five" && <Quiz chapterId={chapter._id} />}
 		</div>
 	);
 };
