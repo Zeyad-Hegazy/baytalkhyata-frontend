@@ -1,11 +1,39 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Card, Col, Dropdown, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { imagesData } from "../../common/commonimages";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
 
+import Conversation from "../../components/chat/Conversation";
+import { useDispatch, useSelector } from "react-redux";
+import { getStudents } from "../../api/admin/students";
+import ChatBox from "../../components/chat/ChatBox";
+
+import { createConversation } from "../../api/admin/conversations";
+
 const Chat = () => {
+	const students = useSelector((state) => state.students);
+	const conversation = useSelector((state) => state.conversation?.conversation);
+	const admin = useSelector((state) => state.auth.profile);
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const response = await getStudents();
+			dispatch({ type: "GET_STUDENTS", payload: response.data.result });
+		};
+		fetchData();
+	}, [dispatch]);
+
+	const createConversationHandler = async (studentId) => {
+		const response = await createConversation({
+			admin: admin._id,
+			student: studentId,
+		});
+		dispatch({ type: "ADD_CONVERSATION", payload: response.data.result });
+	};
+
 	return (
 		<Fragment>
 			<Pageheader title="CHAT" heading="Main Menu" active="Chat" />
@@ -20,64 +48,34 @@ const Chat = () => {
 										<div className="main-chat-list" id="ChatList">
 											{/* Conversations */}
 											<PerfectScrollbar style={{ height: "800px" }}>
-												<div className="media selected">
-													<div className="main-img-user online">
-														<img alt="" src={imagesData("female9")} />
-													</div>
-													<div className="media-body">
-														<div className="media-contact-name">
-															<span>Reynante Labares</span>{" "}
-															<span>10 hours</span>
+												{students.length > 0 &&
+													students.map((s) => (
+														<div
+															key={s._id}
+															onClick={() => createConversationHandler(s._id)}
+														>
+															<Conversation selected={false} user={s} />
 														</div>
-														<p>
-															Nam quam nunc, bl ndit vel aecenas et ante tincid
-														</p>
-													</div>
-												</div>
+													))}
 											</PerfectScrollbar>
 										</div>
 									</div>
 								</div>
 							</Card>
 						</Col>
-						<Col lg={12} xl={6}>
+						<Col lg={12} xl={9}>
 							<Card>
-								<div className="main-content-app">
-									<Link className="main-header-arrow" to="#" id="ChatBodyHide">
-										<i className="icon ion-md-arrow-back"></i>
-									</Link>
-									<div className="main-content-body main-content-body-chat">
-										<div className="main-chat-header">
-											{/* Recever Data header in Chat */}
-											<div className="main-img-user">
-												<img alt="" src={imagesData("female9")} />
-											</div>
-											<div className="main-chat-msg-name">
-												<h6>Reynante Labares</h6>
-												<small>Last seen: 2 minutes ago</small>
-											</div>
-										</div>
-										<div className="main-chat-body" id="ChatBody">
-											<PerfectScrollbar style={{ height: "800px" }}>
-												{/* Messages Here */}
-											</PerfectScrollbar>
-										</div>
-
-										<div className="main-chat-footer">
-											<input
-												className="form-control"
-												placeholder="Type your message here..."
-												type="text"
-											/>
-											<Link className="main-msg-send" to="#">
-												<i className="fe fe-send"></i>
-											</Link>
-										</div>
-									</div>
-								</div>
+								{conversation ? (
+									<ChatBox conversation={conversation} />
+								) : (
+									<Card.Body>
+										<p>Select student to start conversation</p>
+									</Card.Body>
+								)}
 							</Card>
 						</Col>
-						<Col lg={12} xl={3}>
+						{/* Contact Details */}
+						{/* <Col lg={12} xl={3}>
 							<Card className="overflow-hidden">
 								<div className="main-content-app slid1">
 									<Card.Body className=" p-0 chat-main">
@@ -188,7 +186,7 @@ const Chat = () => {
 									</Card.Body>
 								</div>
 							</Card>
-						</Col>
+						</Col> */}
 					</Row>
 				</Col>
 			</Row>
