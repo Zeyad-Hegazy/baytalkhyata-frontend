@@ -6,6 +6,9 @@ import { Link } from "react-router-dom";
 import { createMessage, getMessages } from "./../../api/admin/messages";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:3000");
 
 const ChatBox = ({ conversation }) => {
 	const admin = useSelector((state) => state.auth.profile);
@@ -19,6 +22,20 @@ const ChatBox = ({ conversation }) => {
 	const scrollbarRef = useRef(null);
 
 	const dispatch = useDispatch();
+
+	useEffect(() => {
+		socket.emit("join", admin._id);
+		socket.emit("join", student._id);
+
+		socket.on("message", (data) => {
+			console.log("New message received:", data);
+			dispatch({ type: "ADD_MESSAGE", payload: data });
+		});
+
+		return () => {
+			socket.off("message");
+		};
+	}, [dispatch, admin._id, student._id]);
 
 	useEffect(() => {
 		const fetchMessages = async () => {
@@ -39,7 +56,9 @@ const ChatBox = ({ conversation }) => {
 				reciver: student._id,
 				text: messageText,
 			});
-			dispatch({ type: "ADD_MESSAGE", payload: response.data.result });
+
+			socket.emit("message", response.data.result);
+
 			setMessageText("");
 		} catch (error) {
 			console.log(error);
