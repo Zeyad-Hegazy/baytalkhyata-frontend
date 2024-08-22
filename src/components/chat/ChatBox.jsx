@@ -29,7 +29,7 @@ const ChatBox = ({ conversation }) => {
 
 		socket.on("message", (data) => {
 			console.log("New message received:", data);
-			dispatch({ type: "ADD_MESSAGE", payload: data });
+			dispatch({ type: "GET_MESSAGES", payload: data });
 		});
 
 		return () => {
@@ -58,6 +58,7 @@ const ChatBox = ({ conversation }) => {
 			});
 
 			socket.emit("message", response.data.result);
+			dispatch({ type: "ADD_MESSAGE", payload: response.data.result });
 
 			setMessageText("");
 		} catch (error) {
