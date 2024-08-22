@@ -1,10 +1,11 @@
-import { Link } from "react-router-dom";
-import { imagesData } from "../../common/commonimages";
+import { format, isSameDay, subDays } from "date-fns";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { useDispatch, useSelector } from "react-redux";
-import { createMessage, getMessages } from "../../api/admin/messages";
-import { useEffect, useState } from "react";
+import { imagesData } from "../../common/commonimages";
 import Message from "./Message";
+import { Link } from "react-router-dom";
+import { createMessage, getMessages } from "./../../api/admin/messages";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const ChatBox = ({ conversation }) => {
 	const admin = useSelector((state) => state.auth.profile);
@@ -43,6 +44,13 @@ const ChatBox = ({ conversation }) => {
 		}
 	};
 
+	const formatDateLabel = (date) => {
+		const today = new Date();
+		if (isSameDay(date, today)) return "Today";
+		if (isSameDay(date, subDays(today, 1))) return "Yesterday";
+		return format(date, "MMMM dd, yyyy");
+	};
+
 	return (
 		<div className="main-content-app">
 			<Link className="main-header-arrow" to="#" id="ChatBodyHide">
@@ -60,16 +68,29 @@ const ChatBox = ({ conversation }) => {
 					</div>
 				</div>
 				<div className="main-chat-body" id="ChatBody">
-					<PerfectScrollbar style={{ height: "800px" }}>
+					<PerfectScrollbar style={{ maxHeight: "800px" }}>
 						<div className="content-inner">
 							{messages &&
-								messages.map((m) => (
-									<Message
-										key={m._id}
-										message={m}
-										own={m.sender !== student._id}
-									/>
-								))}
+								messages.length > 0 &&
+								messages.map((m, index) => {
+									const messageDate = new Date(m.createdAt);
+									const showDateLabel =
+										index === 0 ||
+										!isSameDay(
+											new Date(messages[index - 1].createdAt),
+											messageDate
+										);
+									return (
+										<div key={m._id}>
+											{showDateLabel && (
+												<label className="main-chat-time">
+													<span>{formatDateLabel(messageDate)}</span>
+												</label>
+											)}
+											<Message message={m} own={m.sender !== student._id} />
+										</div>
+									);
+								})}
 						</div>
 					</PerfectScrollbar>
 				</div>

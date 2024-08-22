@@ -47,7 +47,7 @@ const Chat = () => {
 									<div className="main-content-left main-content-left-chat overflow-hidden">
 										<div className="main-chat-list" id="ChatList">
 											{/* Conversations */}
-											<PerfectScrollbar style={{ height: "800px" }}>
+											<PerfectScrollbar style={{ maxHeight: "800px" }}>
 												{students.length > 0 &&
 													students.map((s) => (
 														<div
