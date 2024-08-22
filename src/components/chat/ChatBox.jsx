@@ -4,7 +4,7 @@ import { imagesData } from "../../common/commonimages";
 import Message from "./Message";
 import { Link } from "react-router-dom";
 import { createMessage, getMessages } from "./../../api/admin/messages";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const ChatBox = ({ conversation }) => {
@@ -15,6 +15,8 @@ const ChatBox = ({ conversation }) => {
 	const messages = useSelector((state) => state.messages);
 
 	const [messageText, setMessageText] = useState("");
+
+	const scrollbarRef = useRef(null);
 
 	const dispatch = useDispatch();
 
@@ -51,6 +53,12 @@ const ChatBox = ({ conversation }) => {
 		return format(date, "MMMM dd, yyyy");
 	};
 
+	useEffect(() => {
+		if (scrollbarRef.current) {
+			scrollbarRef.current.scrollTop = scrollbarRef.current.scrollHeight;
+		}
+	}, [messages]);
+
 	return (
 		<div className="main-content-app">
 			<Link className="main-header-arrow" to="#" id="ChatBodyHide">
@@ -68,7 +76,10 @@ const ChatBox = ({ conversation }) => {
 					</div>
 				</div>
 				<div className="main-chat-body" id="ChatBody">
-					<PerfectScrollbar style={{ maxHeight: "800px" }}>
+					<PerfectScrollbar
+						containerRef={(ref) => (scrollbarRef.current = ref)}
+						style={{ maxHeight: "800px" }}
+					>
 						<div className="content-inner">
 							{messages &&
 								messages.length > 0 &&
