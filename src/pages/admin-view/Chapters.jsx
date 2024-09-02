@@ -508,84 +508,86 @@ const Chapters = () => {
 												</Modal>
 											)}
 
-											<div className="mt-3">
-												{state.uploadedVideo.base64 &&
-													state.activeType === "video" && (
-														<>
-															<video controls>
-																<source
-																	src={state.uploadedVideo.base64}
-																	type={state.uploadedVideo.file.type}
+											<Col sm={7}>
+												<div className="mt-3">
+													{state.uploadedVideo.base64 &&
+														state.activeType === "video" && (
+															<>
+																<video controls height={"100%"} width={"100%"}>
+																	<source
+																		src={state.uploadedVideo.base64}
+																		type={state.uploadedVideo.file.type}
+																	/>
+																</video>
+																<div className="mt-4">
+																	File Size :{" "}
+																	{state.uploadedVideo &&
+																		formatBytes(state.uploadedVideo.file.size)}
+																</div>
+															</>
+														)}
+													{state.uploadedAudio.base64 &&
+														state.activeType === "audio" && (
+															<>
+																<audio controls>
+																	<source
+																		src={state.uploadedAudio.base64}
+																		type={state.uploadedAudio.file.type}
+																	/>
+																</audio>
+																<div className="mt-4">
+																	File Size :{" "}
+																	{state.uploadedAudio &&
+																		formatBytes(state.uploadedAudio.file.size)}
+																</div>
+															</>
+														)}
+													{state.uploadedPdf.base64 &&
+														state.activeType === "pdf" && (
+															<>
+																<iframe
+																	src={state.uploadedPdf.base64}
+																	width="100%"
+																	height="600px"
 																/>
-															</video>
-															<div className="mt-4">
-																File Size :{" "}
-																{state.uploadedVideo &&
-																	formatBytes(state.uploadedVideo.file.size)}
-															</div>
-														</>
-													)}
-												{state.uploadedAudio.base64 &&
-													state.activeType === "audio" && (
-														<>
-															<audio controls>
-																<source
-																	src={state.uploadedAudio.base64}
-																	type={state.uploadedAudio.file.type}
+																<div className="mt-4">
+																	File Size :{" "}
+																	{state.uploadedPdf &&
+																		formatBytes(state.uploadedPdf.file.size)}
+																</div>
+															</>
+														)}
+													{state.uploadedImage.base64 &&
+														state.activeType === "image" && (
+															<>
+																<img
+																	src={state.uploadedImage.base64}
+																	alt="Preview"
+																	className="img-fluid"
 																/>
-															</audio>
-															<div className="mt-4">
-																File Size :{" "}
-																{state.uploadedAudio &&
-																	formatBytes(state.uploadedAudio.file.size)}
-															</div>
-														</>
+																<div className="mt-4">
+																	File Size :{" "}
+																	{state.uploadedImage &&
+																		formatBytes(state.uploadedImage.file.size)}
+																</div>
+															</>
+														)}
+													{state.text && state.activeType === "text" && (
+														<div className="mt-3">
+															<h5>Text Preview:</h5>
+															<p>
+																<center>
+																	<span
+																		dangerouslySetInnerHTML={{
+																			__html: state.text,
+																		}}
+																	/>
+																</center>
+															</p>
+														</div>
 													)}
-												{state.uploadedPdf.base64 &&
-													state.activeType === "pdf" && (
-														<>
-															<iframe
-																src={state.uploadedPdf.base64}
-																width="100%"
-																height="600px"
-															/>
-															<div className="mt-4">
-																File Size :{" "}
-																{state.uploadedPdf &&
-																	formatBytes(state.uploadedPdf.file.size)}
-															</div>
-														</>
-													)}
-												{state.uploadedImage.base64 &&
-													state.activeType === "image" && (
-														<>
-															<img
-																src={state.uploadedImage.base64}
-																alt="Preview"
-																className="img-fluid"
-															/>
-															<div className="mt-4">
-																File Size :{" "}
-																{state.uploadedImage &&
-																	formatBytes(state.uploadedImage.file.size)}
-															</div>
-														</>
-													)}
-												{state.text && state.activeType === "text" && (
-													<div className="mt-3">
-														<h5>Text Preview:</h5>
-														<p>
-															<center>
-																<span
-																	dangerouslySetInnerHTML={{
-																		__html: state.text,
-																	}}
-																/>
-															</center>
-														</p>
-													</div>
-												)}
-											</div>
+												</div>
+											</Col>
 										</Card.Body>
 									</Card>
 								) : (
