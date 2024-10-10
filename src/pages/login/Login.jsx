@@ -24,11 +24,20 @@ const Login = () => {
 	const navigate = useNavigate();
 
 	const loginHandler = async () => {
-		const response = await logIn(data);
-		if (response.status === 200) {
-			localStorage.setItem("auth", JSON.stringify(response.data.result));
-			dispatch({ type: "login" });
-			navigate(`/admin/dashboard`);
+		try {
+			const response = await logIn(data);
+			if (response.status === 200) {
+				localStorage.setItem("auth", JSON.stringify(response.data.result));
+				dispatch({ type: "login" });
+				navigate(`/admin/dashboard`);
+			}
+		} catch (error) {
+			console.log(error);
+			dispatch({
+				type: "open",
+				payload: { message: error.response.data.message },
+				status: 400,
+			});
 		}
 	};
 	return (
