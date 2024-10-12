@@ -16,6 +16,7 @@ import {
 	getDiplomas,
 	deleteDiploma,
 	updateDiploma,
+	assignDiploma,
 } from "../../api/admin/diplomas";
 import { useNavigate } from "react-router-dom";
 import { createChapter } from "./../../api/admin/chapter";
@@ -41,6 +42,7 @@ const Diplomas = () => {
 	}, [dispatch]);
 
 	const diplomas = useSelector((state) => state.diplomas);
+	const students = useSelector((state) => state.students);
 
 	const [showModal, setShowModal] = useState(false);
 	const [confirmDeleteShow, setConfirmDeleteShow] = useState(false);
@@ -62,6 +64,9 @@ const Diplomas = () => {
 		totalHours: 0,
 		expiresIn: "",
 	});
+
+	const [showAssignModal, setShowAssignModal] = useState(false);
+	const [selectedDiplomaId, setSelectedDiplomaId] = useState("");
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
@@ -143,6 +148,28 @@ const Diplomas = () => {
 			[id]: !prevState[id],
 		}));
 	};
+
+	const handleAssignClick = (diplomaId) => {
+		setSelectedDiplomaId(diplomaId);
+		setShowAssignModal(true);
+	};
+
+	const handleAssignDiploma = async (studentId) => {
+		try {
+			const response = await assignDiploma(studentId, {
+				diplomaId: selectedDiplomaId,
+			});
+			setShowAssignModal(false);
+			dispatch({ type: "open", payload: { message: response.data.message } });
+		} catch (error) {
+			setShowAssignModal(false);
+			dispatch({
+				type: "open",
+				payload: { message: error.response.data.message },
+			});
+		}
+	};
+
 	return (
 		<>
 			<div className="m-4 position-relative">
@@ -171,6 +198,14 @@ const Diplomas = () => {
 													<i className="fe fe-more-vertical"></i>
 												</Dropdown.Toggle>
 												<Dropdown.Menu>
+													<Dropdown.Item
+														href="#"
+														className="d-inline-flex align-items-center"
+														onClick={() => handleAssignClick(diploma._id)}
+													>
+														<i className="fa fa-gift me-2"></i> Assign to
+														Student
+													</Dropdown.Item>
 													<Dropdown.Item
 														href="#"
 														className="d-inline-flex align-items-center"
@@ -420,6 +455,35 @@ const Diplomas = () => {
 					</Button>
 					<Button variant="primary" onClick={handleSaveChapter}>
 						{"Add Chapter"}
+					</Button>
+				</Modal.Footer>
+			</Modal>
+
+			<Modal show={showAssignModal} onHide={() => setShowAssignModal(false)}>
+				<Modal.Header closeButton>
+					<Modal.Title>Assign Diploma to Student</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<Form>
+						<Form.Group className="mb-3" controlId="formStudents">
+							<Form.Label>Select Student</Form.Label>
+							<Form.Control
+								as="select"
+								onChange={(e) => handleAssignDiploma(e.target.value)}
+							>
+								<option value="">Select Student</option>
+								{students.map((student) => (
+									<option key={student._id} value={student._id}>
+										{student.fullName}
+									</option>
+								))}
+							</Form.Control>
+						</Form.Group>
+					</Form>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="secondary" onClick={() => setShowAssignModal(false)}>
+						Close
 					</Button>
 				</Modal.Footer>
 			</Modal>
