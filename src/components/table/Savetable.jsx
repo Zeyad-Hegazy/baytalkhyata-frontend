@@ -16,13 +16,6 @@ export const StudentTable = ({ getAll, contacts }) => {
 	const [modalShow, setModalShow] = React.useState(false);
 	const [confirmDeleteShow, setConfirmDeleteShow] = useState(false);
 
-	const [addFormData, setAddFormData] = useState({
-		fullName: "",
-		Password: "",
-		phone: "",
-		email: "",
-	});
-
 	const [editFormData, setEditFormData] = useState({
 		fullName: "",
 		phone: "",
@@ -31,18 +24,6 @@ export const StudentTable = ({ getAll, contacts }) => {
 
 	const [editContactId, setEditContactId] = useState(null);
 	const [deleteContactId, setDeleteContactId] = useState(null);
-
-	const handleAddFormChange = (event) => {
-		event.preventDefault();
-
-		const fieldName = event.target.getAttribute("name");
-		const fieldValue = event.target.value;
-
-		const newFormData = { ...addFormData };
-		newFormData[fieldName] = fieldValue;
-
-		setAddFormData(newFormData);
-	};
 
 	const handleEditFormChange = (event) => {
 		event.preventDefault();
@@ -58,15 +39,6 @@ export const StudentTable = ({ getAll, contacts }) => {
 
 	const handleCancelClick = () => {
 		setEditContactId(null);
-	};
-
-	const handleAddFormSubmit = async (event) => {
-		event.preventDefault();
-		const response = await createStudent(addFormData);
-		dispatch({ type: "ADD_STUDENT", payload: response.data.result });
-		dispatch({ type: "open", payload: { message: response.data.message } });
-		await getAll();
-		setModalShow(false);
 	};
 
 	const handleEditFormSubmit = async (event) => {
@@ -104,13 +76,6 @@ export const StudentTable = ({ getAll, contacts }) => {
 	return (
 		<div className="app-container">
 			<Form onSubmit={handleEditFormSubmit}>
-				<Button
-					variant=""
-					className="btn btn-primary mb-3"
-					onClick={() => setModalShow(true)}
-				>
-					Add New Student
-				</Button>
 				<Table
 					id="delete-datatable"
 					className="table table-bordered text-nowrap border-bottom"
@@ -148,78 +113,6 @@ export const StudentTable = ({ getAll, contacts }) => {
 					</tbody>
 				</Table>
 			</Form>
-
-			<Modal
-				show={modalShow}
-				onHide={() => setModalShow(false)}
-				size="lg"
-				aria-labelledby="contained-modal-title-vcenter"
-				centered
-			>
-				<Modal.Header>
-					<Modal.Title id="contained-modal-title-vcenter">
-						Add New Student
-					</Modal.Title>
-					<Button
-						variant=""
-						className="btn btn-close"
-						onClick={() => setModalShow(false)}
-					>
-						x
-					</Button>
-				</Modal.Header>
-				<Modal.Body>
-					<Form onSubmit={handleAddFormSubmit} className="">
-						<Form.Control
-							type="text"
-							name="fullName"
-							required
-							placeholder="full name"
-							onChange={handleAddFormChange}
-							className="form-control mb-2 border"
-						/>
-						<Form.Control
-							type="text"
-							name="phone"
-							required
-							placeholder="phone number"
-							onChange={handleAddFormChange}
-							className="form-control mb-2"
-						/>
-						<Form.Control
-							type="email"
-							name="email"
-							required
-							placeholder="email"
-							onChange={handleAddFormChange}
-							className="form-control mb-2"
-						/>
-						<Form.Control
-							type="password"
-							name="password"
-							required
-							placeholder="password"
-							onChange={handleAddFormChange}
-							className="form-control mb-2"
-						/>
-						<Button
-							variant=""
-							className="btn btn-primary me-2 wd-100p "
-							type="submit"
-						>
-							Add Student
-						</Button>
-					</Form>
-				</Modal.Body>
-				<Modal.Footer>
-					<Button
-						className="btn btn-primary wd-20p"
-						onClick={() => setModalShow(false)}
-					>
-						Close
-					</Button>
-				</Modal.Footer>
-			</Modal>
 
 			<Modal
 				show={confirmDeleteShow}
