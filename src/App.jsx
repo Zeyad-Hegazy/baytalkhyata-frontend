@@ -14,6 +14,7 @@ import Settings from "./pages/admin-view/Settings";
 import Chapters from "./pages/admin-view/Chapters";
 import Diplomas from "./pages/admin-view/Diplomas";
 import Categories from "./pages/admin-view/Categories";
+import Notifications from "./pages/admin-view/Notifications";
 
 import NewChapters from "./pages/admin-view/NewChapters";
 
@@ -81,6 +82,12 @@ const App = () => {
 							<Route
 								path="chat"
 								element={<PrivateRoute element={<Chat />} roles={["admin"]} />}
+							/>
+							<Route
+								path="notifications"
+								element={
+									<PrivateRoute element={<Notifications />} roles={["admin"]} />
+								}
 							/>
 							<Route
 								path="setting"

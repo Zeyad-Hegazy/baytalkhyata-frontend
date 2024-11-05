@@ -83,6 +83,14 @@ const MENUITEMS = [
 				selected: false,
 			},
 			{
+				title: "notifications",
+				path: "/admin/notifications",
+				type: "link",
+				icon: <i className="bi bi-bell-fill"></i>,
+				active: false,
+				selected: false,
+			},
+			{
 				title: "Setting",
 				path: "/admin/setting",
 				type: "link",

@@ -131,7 +131,7 @@ const Store = () => {
 
 	return (
 		<Fragment>
-			<Pageheader title="Gift Store" heading="Main Menu" active="gift store" />
+			<Pageheader title="Gift Store" heading="Main Menu" active="Gift Store" />
 
 			<Col className="p-0" lg={12} xl={12}>
 				<Button
