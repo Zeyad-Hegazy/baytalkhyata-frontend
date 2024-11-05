@@ -6,7 +6,7 @@ import { createQuiz } from "../../api/admin/chapter";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-const Quiz = ({ chapterId }) => {
+const Quiz = ({ chapterId, setOpenFinalQuiz }) => {
 	const [quizTitle, setQuizTitle] = useState("");
 	const [questions, setQuestions] = useState([]);
 	const [showTextEditor, setShowTextEditor] = useState(false);
@@ -14,7 +14,6 @@ const Quiz = ({ chapterId }) => {
 	const [activeQuestionIndex, setActiveQuestionIndex] = useState(null);
 	const [editorContent, setEditorContent] = useState("");
 
-	const navigate = useNavigate();
 	const reduxDispatch = useDispatch();
 
 	const handleQuizTitleChange = (e) => setQuizTitle(e.target.value);
@@ -65,13 +64,13 @@ const Quiz = ({ chapterId }) => {
 				questions.reduce((total, q) => total + q.score, 0) * 0.7
 			),
 		};
-		await createQuiz(newQuiz);
-		navigate("/admin/diplomas");
+		const response = await createQuiz(newQuiz);
 		reduxDispatch({
 			type: "open",
-			payload: { message: "All levels created successfully" },
+			payload: { message: response.data.message },
 		});
 		setIsSubmitting(false);
+		setOpenFinalQuiz(false);
 	};
 
 	const handleTextEditorChange = (content) => setEditorContent(content);

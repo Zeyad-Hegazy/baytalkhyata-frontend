@@ -6,6 +6,7 @@ import Dropzone from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { addLevelToChapter } from "../../api/admin/chapter";
+import Quiz from "./Quiz";
 
 const formatBytes = (bytes) => {
 	const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
@@ -36,6 +37,8 @@ const NewChapters = () => {
 		fileBuffer: null,
 		size: "",
 	});
+
+	const [openFinalQuiz, setOpenFinalQuiz] = useState(false);
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -160,10 +163,27 @@ const NewChapters = () => {
 						</Card>
 					</Col>
 					<Col sm={9}>
-						<div className="mt-4">
-							<Button onClick={() => setShowForm(!showForm)}>
-								<i className="fe fe-plus"></i> <span>Add Level</span>
-							</Button>
+						<div className="d-flex gap-4">
+							<div className="mt-4">
+								<Button
+									onClick={() => {
+										setShowForm((prevState) => !prevState);
+										setOpenFinalQuiz(false);
+									}}
+								>
+									<i className="fe fe-plus"></i> <span>Add Level</span>
+								</Button>
+							</div>
+							<div className="mt-4">
+								<Button
+									onClick={() => {
+										setOpenFinalQuiz((prevState) => !prevState);
+										setShowForm(false);
+									}}
+								>
+									<span>Create Final Quiz</span>
+								</Button>
+							</div>
 						</div>
 
 						{showForm && (
@@ -275,6 +295,14 @@ const NewChapters = () => {
 									</Card>
 								</Col>
 							</Row>
+						)}
+						{openFinalQuiz && (
+							<Card className="mt-4">
+								<Quiz
+									chapterId={chapter._id}
+									setOpenFinalQuiz={setOpenFinalQuiz}
+								/>
+							</Card>
 						)}
 					</Col>
 				</Row>
