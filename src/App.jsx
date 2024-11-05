@@ -15,6 +15,8 @@ import Chapters from "./pages/admin-view/Chapters";
 import Diplomas from "./pages/admin-view/Diplomas";
 import Categories from "./pages/admin-view/Categories";
 
+import NewChapters from "./pages/admin-view/NewChapters";
+
 const App = () => {
 	const toastar = useSelector((state) => state.toastar);
 	const isLoading = useSelector((state) => state.loading);
@@ -59,7 +61,7 @@ const App = () => {
 							<Route
 								path="chapters"
 								element={
-									<PrivateRoute element={<Chapters />} roles={["admin"]} />
+									<PrivateRoute element={<NewChapters />} roles={["admin"]} />
 								}
 							/>
 							<Route
