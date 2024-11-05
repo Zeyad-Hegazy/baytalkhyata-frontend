@@ -4,6 +4,7 @@ import { imagesData } from "../../common/commonimages";
 import Message from "./Message";
 import { Link } from "react-router-dom";
 import { createMessage, getMessages } from "./../../api/admin/messages";
+import { getAnswersForQuestion } from "./../../api/admin/fqa";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import io from "socket.io-client";
@@ -18,9 +19,10 @@ const ChatBox = ({ conversation }) => {
 	const messages = useSelector((state) => state.messages);
 
 	const [messageText, setMessageText] = useState("");
+	const [quickReplies, setQuickReplies] = useState([]);
+	const [selectedQuickReply, setSelectedQuickReply] = useState("");
 
 	const scrollbarRef = useRef(null);
-
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -49,18 +51,43 @@ const ChatBox = ({ conversation }) => {
 		fetchMessages();
 	}, [dispatch, student._id]);
 
+	useEffect(() => {
+		const fetchQuickReplies = async () => {
+			try {
+				const lastMessage = messages[messages.length - 1];
+				const lastMessageText = lastMessage ? lastMessage.text : "";
+
+				const response = await getAnswersForQuestion(lastMessageText);
+
+				if (response.data && response.data.result) {
+					setQuickReplies(response.data.result);
+				} else {
+					setQuickReplies([]);
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		};
+
+		fetchQuickReplies();
+	}, [messages]);
+
 	const sendMessage = async () => {
 		try {
+			const text = selectedQuickReply || messageText;
+
 			const response = await createMessage({
 				sender: admin._id,
 				reciver: student._id,
-				text: messageText,
+				text: text,
 			});
 
 			socket.emit("message", response.data.result);
 			dispatch({ type: "ADD_MESSAGE", payload: response.data.result });
 
 			setMessageText("");
+			setSelectedQuickReply("");
+			setQuickReplies([]);
 		} catch (error) {
 			console.log(error);
 		}
@@ -86,7 +113,7 @@ const ChatBox = ({ conversation }) => {
 			</Link>
 			<div className="main-content-body main-content-body-chat">
 				<div className="main-chat-header">
-					{/* Recever Data header in Chat */}
+					{/* Receiver Data header in Chat */}
 					<div className="main-img-user">
 						<img alt="" src={imagesData("female9")} />
 					</div>
@@ -126,6 +153,17 @@ const ChatBox = ({ conversation }) => {
 					</PerfectScrollbar>
 				</div>
 
+				<div className="d-flex flex-wrap mb-2">
+					{quickReplies.map((reply) => (
+						<button
+							key={reply._id}
+							className="btn btn-outline-primary me-2 mb-2"
+							onClick={() => setMessageText(reply.title)}
+						>
+							{reply.title}
+						</button>
+					))}
+				</div>
 				<div className="main-chat-footer">
 					<input
 						className="form-control"
@@ -133,11 +171,12 @@ const ChatBox = ({ conversation }) => {
 						type="text"
 						value={messageText}
 						onChange={(e) => setMessageText(e.target.value)}
+						disabled={!!selectedQuickReply}
 					/>
 					<button
 						className="main-msg-send"
 						onClick={sendMessage}
-						disabled={messageText === ""}
+						disabled={messageText === "" && selectedQuickReply === ""}
 					>
 						<i className="fe fe-send"></i>
 					</button>
