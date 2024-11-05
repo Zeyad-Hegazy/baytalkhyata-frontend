@@ -99,6 +99,14 @@ const MENUITEMS = [
 				selected: false,
 			},
 			{
+				title: "FQA",
+				path: "/admin/fqa",
+				type: "link",
+				icon: <i className="bi bi-question-circle-fill"></i>,
+				active: false,
+				selected: false,
+			},
+			{
 				title: "Setting",
 				path: "/admin/setting",
 				type: "link",

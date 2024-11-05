@@ -17,6 +17,7 @@ import Categories from "./pages/admin-view/Categories";
 import NewChapters from "./pages/admin-view/NewChapters";
 import Notifications from "./pages/admin-view/Notifications";
 import Policy from "./pages/admin-view/Policy";
+import FQA from "./pages/admin-view/FQA";
 
 const App = () => {
 	const toastar = useSelector((state) => state.toastar);
@@ -94,6 +95,10 @@ const App = () => {
 								element={
 									<PrivateRoute element={<Policy />} roles={["admin"]} />
 								}
+							/>
+							<Route
+								path="fqa"
+								element={<PrivateRoute element={<FQA />} roles={["admin"]} />}
 							/>
 							<Route
 								path="setting"
