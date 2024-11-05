@@ -12,6 +12,7 @@ import { categories } from "./categories/reducer";
 import { categoryItems } from "./categoryItems/reducer";
 import { conversation } from "./conversation/reducer";
 import { messages } from "./message/reducer";
+import { policies } from "./policy/reducer";
 
 const rootred = combineReducers({
 	cartreducer,
@@ -27,6 +28,7 @@ const rootred = combineReducers({
 	messages,
 	toastar,
 	loading,
+	policies,
 });
 
 export default rootred;

@@ -14,9 +14,9 @@ import Settings from "./pages/admin-view/Settings";
 import Chapters from "./pages/admin-view/Chapters";
 import Diplomas from "./pages/admin-view/Diplomas";
 import Categories from "./pages/admin-view/Categories";
-import Notifications from "./pages/admin-view/Notifications";
-
 import NewChapters from "./pages/admin-view/NewChapters";
+import Notifications from "./pages/admin-view/Notifications";
+import Policy from "./pages/admin-view/Policy";
 
 const App = () => {
 	const toastar = useSelector((state) => state.toastar);
@@ -87,6 +87,12 @@ const App = () => {
 								path="notifications"
 								element={
 									<PrivateRoute element={<Notifications />} roles={["admin"]} />
+								}
+							/>
+							<Route
+								path="policy"
+								element={
+									<PrivateRoute element={<Policy />} roles={["admin"]} />
 								}
 							/>
 							<Route
