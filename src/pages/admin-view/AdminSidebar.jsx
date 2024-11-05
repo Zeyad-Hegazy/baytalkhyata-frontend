@@ -190,6 +190,7 @@ const AdminSidebar = () => {
 												menuItem.active ? "is-expanded" : ""
 											}`}
 											key={i}
+											style={{ marginBlock: "1rem" }}
 										>
 											{menuItem.type === "link" ? (
 												<NavLink
@@ -201,7 +202,7 @@ const AdminSidebar = () => {
 													{menuItem.icon}
 													<span
 														className="side-menu__label"
-														style={{ marginLeft: "15px" }}
+														style={{ marginLeft: "15px", fontSize: "1rem" }}
 													>
 														{menuItem.title}
 													</span>
