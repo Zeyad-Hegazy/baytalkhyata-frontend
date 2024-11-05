@@ -8,6 +8,8 @@ import Conversation from "../../components/chat/Conversation";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
+import { sendNotification } from "../../api/admin/notification";
+
 const Notifications = () => {
 	const students = useSelector((state) => state.students);
 	const [selectedStudent, setSelectedStudent] = useState(null);
@@ -27,7 +29,14 @@ const Notifications = () => {
 	const handleSendNotification = async (e) => {
 		e.preventDefault();
 		try {
-			console.log({ userId: selectedStudent?._id, title, message });
+			const response = await sendNotification({
+				userId: selectedStudent?._id,
+				title,
+				content: message,
+			});
+			dispatch({ type: "open", payload: { message: response.data.message } });
+			setTitle("");
+			setMessage("");
 		} catch (error) {
 			console.error("Error sending notification:", error);
 		}
