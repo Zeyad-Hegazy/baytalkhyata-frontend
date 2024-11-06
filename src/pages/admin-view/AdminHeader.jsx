@@ -1,12 +1,9 @@
-import React, { Fragment, useState, useEffect } from "react";
-import { Navbar, Dropdown, Button, Form, ListGroup } from "react-bootstrap";
+import { Fragment, useEffect } from "react";
+import { Navbar, Dropdown, Button } from "react-bootstrap";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import { auth } from "../../pages/login/firebase";
-import { useDispatch, useSelector } from "react-redux";
-import { Delete } from "../../common/redux/action";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { imagesData } from "../../common/commonimages";
-import { MENUITEMS } from "../../common/sidemenu";
 import * as Switcherdata from "../../common/switcherdata";
 import { logOut } from "../../api/auth";
 
@@ -15,103 +12,14 @@ export default function AdminHeader() {
 		Switcherdata.localStorageBackUp();
 	}, []);
 
-	//Search functionality
-	const [show1, setShow1] = useState(false);
-	const [InputValue, setInputValue] = useState("");
-	const [show2, setShow2] = useState(false);
-	const [searchcolor, setsearchcolor] = useState("text-dark");
-	const [searchval, setsearchval] = useState("Type something");
-	const [NavData, setNavData] = useState([]);
-
 	document.addEventListener("click", function () {
 		document.querySelector(".search-result")?.classList.add("d-none");
 	});
-	const myfunction = (inputvalue) => {
-		document.querySelector(".search-result")?.classList.remove("d-none");
 
-		const i = [];
-		const allElement2 = [];
-
-		MENUITEMS.map((mainlevel) => {
-			if (mainlevel.Items) {
-				setShow1(true);
-				mainlevel.Items.map((sublevel) => {
-					if (sublevel.children) {
-						sublevel.children.map((sublevel1) => {
-							i.push(sublevel1);
-							if (sublevel1.children) {
-								sublevel1.children.map((sublevel2) => {
-									i.push(sublevel2);
-									return sublevel2;
-								});
-							}
-							return sublevel1;
-						});
-					}
-					return sublevel;
-				});
-			}
-			return mainlevel;
-		});
-		for (const allElement of i) {
-			if (allElement.title.toLowerCase().includes(inputvalue.toLowerCase())) {
-				if (
-					allElement.title.toLowerCase().startsWith(inputvalue.toLowerCase())
-				) {
-					setShow2(true);
-					allElement2.push(allElement);
-				}
-			}
-		}
-		if (!allElement2.length || inputvalue === "") {
-			if (inputvalue === "") {
-				setShow2(false);
-				setsearchval("Type something");
-				setsearchcolor("text-dark p-3");
-			}
-			if (!allElement2.length) {
-				setShow2(false);
-				setsearchcolor("text-danger p-3");
-				setsearchval("There is no component with this name");
-			}
-		}
-		setNavData(allElement2);
-	};
-
-	const [Lang, setLang] = React.useState(false);
-	function Fullscreen() {
-		if (
-			(document.fullScreenElement && document.fullScreenElement === null) ||
-			(!document.mozFullScreen && !document.webkitIsFullScreen)
-		) {
-			if (document.documentElement.requestFullScreen) {
-				document.documentElement.requestFullScreen();
-			} else if (document.documentElement.mozRequestFullScreen) {
-				document.documentElement.mozRequestFullScreen();
-			} else if (document.documentElement.webkitRequestFullScreen) {
-				document.documentElement.webkitRequestFullScreen(
-					Element.ALLOW_KEYBOARD_INPUT
-				);
-			}
-		} else {
-			if (document.cancelFullScreen) {
-				document.cancelFullScreen();
-			} else if (document.mozCancelFullScreen) {
-				document.mozCancelFullScreen();
-			} else if (document.webkitCancelFullScreen) {
-				document.webkitCancelFullScreen();
-			}
-		}
-	}
-
-	//leftsidemenu
 	const openCloseSidebar = () => {
 		document.querySelector("body").classList.toggle("sidenav-toggled");
 	};
-	//rightsidebar
-	const Rightsidebar = () => {
-		document.querySelector(".sidebar-right").classList.add("sidebar-open");
-	};
+
 	const Darkmode = () => {
 		if (document.querySelector(".app")?.classList.contains("dark-theme")) {
 			document.querySelector(".app")?.classList.remove("dark-theme");
@@ -145,70 +53,34 @@ export default function AdminHeader() {
 		}
 	};
 
-	// responsivesearch
-	const responsivesearch = () => {
-		document.querySelector(".navbar-form").classList.toggle("active");
-	};
-	//swichermainright
-	const swichermainright = () => {
-		document.querySelector(".demo_changer").classList.toggle("active");
-		document.querySelector(".demo_changer").style.right = "0px";
+	function Fullscreen() {
 		if (
-			document.querySelector(".switcher-backdrop")?.classList.contains("d-none")
+			(document.fullScreenElement && document.fullScreenElement === null) ||
+			(!document.mozFullScreen && !document.webkitIsFullScreen)
 		) {
-			document.querySelector(".switcher-backdrop")?.classList.add("d-block");
-			document.querySelector(".switcher-backdrop")?.classList.remove("d-none");
+			if (document.documentElement.requestFullScreen) {
+				document.documentElement.requestFullScreen();
+			} else if (document.documentElement.mozRequestFullScreen) {
+				document.documentElement.mozRequestFullScreen();
+			} else if (document.documentElement.webkitRequestFullScreen) {
+				document.documentElement.webkitRequestFullScreen(
+					Element.ALLOW_KEYBOARD_INPUT
+				);
+			}
+		} else {
+			if (document.cancelFullScreen) {
+				document.cancelFullScreen();
+			} else if (document.mozCancelFullScreen) {
+				document.mozCancelFullScreen();
+			} else if (document.webkitCancelFullScreen) {
+				document.webkitCancelFullScreen();
+			}
 		}
-	};
-	const [price, setPrice] = React.useState(0);
-
-	let getdata = useSelector((state) => state.cartreducer.carts);
+	}
 
 	const dispatch = useDispatch();
 
-	const [anchorEl, setAnchorEl] = React.useState(null);
-	const open = Boolean(anchorEl);
-	const handleClick = (event) => {
-		setAnchorEl(event.currentTarget);
-	};
-
-	const [Data, setData] = React.useState([]);
-
-	const { id } = useParams();
-
-	const compare = () => {
-		let comparedata = getdata.filter((e) => {
-			console.log(e, id);
-			return e.id === id;
-		});
-		setData(comparedata);
-	};
-
-	React.useEffect(() => {
-		compare();
-		// eslint-disable-next-line
-	}, [id]);
-	const ondelete = (id) => {
-		dispatch(Delete(id));
-	};
-
-	function total() {
-		let price = 0;
-		getdata.map((ele) => {
-			price = ele.price * ele.qnty + price;
-			return price;
-		});
-		setPrice(price);
-	}
-
-	React.useEffect(() => {
-		total();
-	});
 	let navigate = useNavigate();
-	const routeChange = () => {
-		let path = `${import.meta.env.BASE_URL}`;
-		navigate(path);
-	};
 
 	const logoutHandler = async () => {
 		await logOut();
@@ -235,7 +107,7 @@ export default function AdminHeader() {
 									alt="logo"
 								/>
 								<img
-									src={imagesData("logowhite")}
+									src={imagesData("logo")}
 									className="mobile-logo dark-logo-1"
 									alt="logo"
 								/>
@@ -264,57 +136,11 @@ export default function AdminHeader() {
 									alt="logo"
 								/>
 								<img
-									src={imagesData("logowhite")}
+									src={imagesData("logo")}
 									className="mobile-logo dark-logo-1"
 									alt="logo"
 								/>
 							</Link>
-						</div>
-						<div className="main-header-center ms-4 d-sm-none d-md-none d-lg-block form-group">
-							<Form.Control
-								defaultValue={InputValue}
-								autoComplete="off"
-								onChange={(ele) => {
-									myfunction(ele.target.value);
-									setInputValue(ele.target.value);
-								}}
-								className="form-control"
-								placeholder="Search..."
-								type="search"
-							/>
-							<Button variant="" className="btn">
-								<i className="fas fa-search"></i>
-							</Button>
-							{show1 ? (
-								<div className="card search-result position-absolute z-index-9 search-fix  border mt-1 w-100">
-									<div className="card-header pb-0">
-										<h4 className="card-title mb-0 me-2 text-break">
-											Search result of {InputValue}
-										</h4>
-									</div>
-									<ListGroup>
-										{show2 ? (
-											NavData.map((e) => (
-												<ListGroup.Item key={Math.random()} className="">
-													<Link
-														to={`${e.path}/`}
-														className="search-result-item"
-														onClick={() => {
-															setShow1(false), setInputValue("");
-														}}
-													>
-														{e.title}
-													</Link>
-												</ListGroup.Item>
-											))
-										) : (
-											<b className={`${searchcolor} `}>{searchval}</b>
-										)}
-									</ListGroup>
-								</div>
-							) : (
-								""
-							)}
 						</div>
 					</div>
 					<div className="main-header-right">
@@ -330,299 +156,6 @@ export default function AdminHeader() {
 								id="navbarSupportedContent-4"
 							>
 								<ul className="nav nav-item header-icons navbar-nav-right flex-nowrap">
-									<li className="dropdown nav-item">
-										<>
-											{/* <Link
-                className="new nav-link"
-                data-bs-target="#country-selector"
-                data-bs-toggle="modal"
-                to="#"
-                onClick={() => setLang(true)}
-            >
-                <svg
-                    className="header-icon-svgs"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                >
-                    <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm7.931 9h-2.764a14.67 14.67 0 0 0-1.792-6.243A8.013 8.013 0 0 1 19.931 11zM12.53 4.027c1.035 1.364 2.427 3.78 2.627 6.973H9.03c.139-2.596.994-5.028 2.451-6.974.172-.01.344-.026.519-.026.179 0 .354.016.53.027zm-3.842.7C7.704 6.618 7.136 8.762 7.03 11H4.069a8.013 8.013 0 0 1 4.619-6.273zM4.069 13h2.974c.136 2.379.665 4.478 1.556 6.23A8.01 8.01 0 0 1 4.069 13zm7.381 6.973C10.049 18.275 9.222 15.896 9.041 13h6.113c-.208 2.773-1.117 5.196-2.603 6.972-.182.012-.364.028-.551.028-.186 0-.367-.016-.55-.027zm4.011-.772c.955-1.794 1.538-3.901 1.691-6.201h2.778a8.005 8.005 0 0 1-4.469 6.201z" />
-                </svg>
-            </Link> */}
-											{/* <Modal
-                show={Lang}
-                onHide={() => setLang(false)}
-                centered="true"
-                id="country-selector"
-            >
-                <Modal.Header>
-                    <h6 className="modal-title">Choose Country</h6>
-                    <Button variant=""
-                        type="button"
-                        onClick={() => setLang(false)}
-                    >
-                        <span aria-hidden="true" className="text-dark">X</span>
-                    </Button>
-                </Modal.Header>
-                <Modal.Body>
-                    <Row as="ul" className=" p-3">
-                        <Col lg={6} as="li" className="mb-2">
-                            <Link
-                                to="#"
-                                className="btn btn-country btn-lg btn-block active"
-                            >
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('us')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                Usa{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2 mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('italy')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                Italy{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('spain')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                Spain{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('india')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                India{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('french')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                France{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('mexico')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                Mexico{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('singapore')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                Singapore{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('poland')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                Poland{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('austria')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                Austria{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('russia')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                Russia{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('germany')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                Germany{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('argentina')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                Argentina{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('brazil')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                Brazil{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('uae')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                U.A.E{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('china')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                China{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('uk')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                U.K{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img
-                                        alt=""
-                                        src={imagesData('malaysia')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                Malaysia{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                        <Col lg={6} as="li" className="mb-2">
-                            {" "}
-                            <Link to="#" className="btn btn-country btn-lg btn-block">
-                                {" "}
-                                <span className="country-selector">
-                                    <img alt=""
-                                        src={imagesData('canada')}
-                                        className="me-3 language"
-                                    />
-                                </span>
-                                Canada{" "}
-                            </Link>{" "}
-                        </Col>{" "}
-                    </Row>
-                </Modal.Body>
-            </Modal> */}
-										</>
-									</li>
 									<li className="dropdown nav-item">
 										<Link
 											to="#"
@@ -653,230 +186,22 @@ export default function AdminHeader() {
 											</span>
 										</Link>
 									</li>
-									{/* <Dropdown className=" nav-item main-header-notification d-flex">
-                  <Dropdown.Toggle className="new nav-link" to="#" variant="">
-                    <>
-                      {
-                        getdata.length ?
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="header-icon-svgs"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921zM17.307 15h-6.64l-2.5-6h11.39l-2.25 6z" />
-                              <circle cx="10.5" cy="19.5" r="1.5" />
-                              <circle cx="17.5" cy="19.5" r="1.5" />
-                            </svg>
-                            <span className="badge bg-warning header-badge" onClick={handleClick} >{getdata.length}</span>
-                          </> : <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="header-icon-svgs"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921zM17.307 15h-6.64l-2.5-6h11.39l-2.25 6z" />
-                              <circle cx="10.5" cy="19.5" r="1.5" />
-                              <circle cx="17.5" cy="19.5" r="1.5" />
-                            </svg>
-                            <span className="badge bg-warning header-badge">7</span>
-                          </>
-                      }
-                    </>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <div className="menu-header-content text-start border-bottom">
-                      <div className="d-flex">
-                        <h6 className="dropdown-title mb-1 tx-15 font-weight-semibold">
-                          Shopping Cart
-                        </h6>
-                        <span className="badge badge-pill bg-indigo ms-auto my-auto float-end">
-                          {
-                            getdata.length ? <>Items ({getdata.length})</> : <>Items (07)</>
-                          }
-                        </span>
-                      </div>
-                    </div>
-                    <div className="main-cart-list cart-scroll">
-                      {
-                        getdata.length ?
-                          <div>
-                            <PerfectScrollbar  style={{ height: "200px" }}>
-                              {
-                                getdata.map((item) => {
-                                  return (
-                                    <React.Fragment key={item.id}>
-
-                                      <div as="dropdown-item" open={open} onClick={handleClick} className="dropdown-item d-flex border-bottom main-cart-item">
-                                        
-                                        <Link to={`${import.meta.env.BASE_URL}pages/ecommerce/productdetails/`} open={open} onClick={ProductService.getidfronShop(item.id)}>
-                                          <img src={(item.src)} className="drop-img cover-image" alt="" />
-                                        </Link>
-                                        <div className="ms-3 text-start">
-                                          <p className="mb-1 text-muted tx-13">{item.name}</p>
-                                          <span className="text-dark tx-semibold tx-12">$ : {item.price}</span>
-                                          <p>Quantity : {item.qnty}</p>
-                                        </div>
-                                        <div className="ms-auto my-auto">
-                                          <div className="" onClick={() => ondelete(item.id)}>
-                                            <i className="fe fe-trash-2 text-end text-danger"></i>
-                                          </div>
-                                        </div>
-
-                                      </div>
-
-                                    </React.Fragment>
-                                  )
-                                })
-                              }
-                        
-                            </PerfectScrollbar>
-                          </div>
-                          :
-                         <><Dropdown.Item
-                          className="d-flex border-bottom  main-cart-item"
-                          href={`${import.meta.env.BASE_URL}pages/ecommerce/productdetails/`}
-                        >
-
-                          <img
-                            className="drop-img cover-image"
-                            src={imagesData('product05')}
-                            alt=""
-                          />
-                          <div className="ms-3 text-start">
-                            <h5 className="mb-1 text-muted tx-13">
-                              Lence Camera
-                            </h5>
-                            <div className="text-dark tx-semibold tx-12">
-                              1 * $ 189.00
-                            </div>
-                          </div>
-
-                          <div className="ms-auto my-auto">
-                            <div className="">
-                              <i className="fe fe-trash-2 text-end text-danger"></i>
-                            </div>
-                          </div>
-                        </Dropdown.Item>
-                          <Dropdown.Item
-                            className="d-flex border-bottom main-cart-item"
-                            href={`${import.meta.env.BASE_URL}pages/ecommerce/productdetails/`}
-                          >
-
-                            <img
-                              alt=""
-                              className="drop-img cover-image"
-                              src={imagesData('product02')}
-                            />
-                            <div className="ms-3 text-start">
-                              <h5 className="mb-1 text-muted tx-13">
-                                White Ear Buds
-                              </h5>
-                              <div className="text-dark tx-semibold tx-12">
-                                3 * $ 59.00
-                              </div>
-                            </div>
-
-
-                            <div className="ms-auto my-auto">
-                              <div className="">
-                                <i className="fe fe-trash-2 text-end text-danger"></i>
-                              </div>
-                            </div>
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            className="d-flex border-bottom main-cart-item"
-                            href={`${import.meta.env.BASE_URL}pages/ecommerce/productdetails/`}
-                          >
-
-                            <img
-                              alt=""
-                              className="drop-img cover-image"
-                              src={imagesData('product12')}
-                            />
-                            <div className="ms-3 text-start">
-                              <h5 className="mb-1 text-muted tx-13">
-                                Branded Black Headset
-                              </h5>
-                              <div className="text-dark tx-semibold tx-12">
-                                2 * $ 39.99
-                              </div>
-                            </div>
-                            <div className="ms-auto my-auto">
-                              <div className="">
-                                <i className="fe fe-trash-2 text-end text-danger"></i>
-                              </div>
-                            </div>
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            className="d-flex border-bottom main-cart-item"
-                            href={`${import.meta.env.BASE_URL}pages/ecommerce/productdetails/`}
-                          >
-
-                            <img
-                              alt=""
-                              className="drop-img cover-image"
-                              src={imagesData('product06')}
-                            />
-                            <div className="ms-3 text-start">
-                              <h5 className="mb-1 text-muted tx-13">
-                                Glass Decor Item
-                              </h5>
-                              <div className="text-dark tx-semibold tx-12">
-                                5 * $ 5.99
-                              </div>
-                            </div>
-
-                            <div className="ms-auto my-auto">
-                              <div className="">
-                                <i className="fe fe-trash-2 text-end text-danger"></i>
-                              </div>
-                            </div>
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            className="d-flex border-bottom main-cart-item"
-                            href={`${import.meta.env.BASE_URL}pages/ecommerce/productdetails/`}
-                          >
-
-                            <img
-                              className="drop-img cover-image"
-                              src={imagesData('product04')}
-                              alt=""
-                            />
-
-                            <div className="ms-3 text-start">
-                              <h5 className="mb-1 text-muted tx-13">
-                                Pink Teddy Bear
-                              </h5>
-                              <div className="text-dark tx-semibold tx-12">
-                                1 * $ 10.00
-                              </div>
-                            </div>
-                            <div className="ms-auto my-auto">
-                              <div className="">
-                                <i className="fe fe-trash-2 text-end text-danger"></i>
-                              </div>
-                            </div>
-                          </Dropdown.Item> </>
-                      }
-                    </div>
-                    <div className="dropdown-footer text-start">
-                      <Link
-                        className="btn btn-primary btn-sm btn-w-md"
-                        to={`${import.meta.env.BASE_URL}pages/ecommerce/checkout/`}
-                      >
-                        Checkout
-                      </Link>
-                      <span className="float-end mt-1 tx-semibold">
-                        {getdata.length ? <>Sub Total: $ {price}</> : <> Sub Total : $ 00.00</>}
-                      </span>
-                    </div>
-                  </Dropdown.Menu>
-                </Dropdown> */}
+									<li
+										className="nav-item full-screen fullscreen-button"
+										onClick={Fullscreen}
+									>
+										<Link className="new nav-link full-screen-link" to="#">
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												className="header-icon-svgs"
+												width="24"
+												height="24"
+												viewBox="0 0 24 24"
+											>
+												<path d="M5 5h5V3H3v7h2zm5 14H5v-5H3v7h7zm11-5h-2v5h-5v2h7zm-2-4h2V3h-7v2h5z" />
+											</svg>
+										</Link>
+									</li>
 									<Dropdown className="dropdown nav-item  main-header-message ">
 										<Dropdown.Toggle className="new nav-link" to="#" variant="">
 											<svg
@@ -1040,330 +365,8 @@ export default function AdminHeader() {
 											</div>
 										</Dropdown.Menu>
 									</Dropdown>
-									<Dropdown className=" nav-item main-header-notification d-flex">
-										<Dropdown.Toggle className="new nav-link" to="#" variant="">
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												className="header-icon-svgs"
-												width="24"
-												height="24"
-												viewBox="0 0 24 24"
-											>
-												<path d="M19 13.586V10c0-3.217-2.185-5.927-5.145-6.742C13.562 2.52 12.846 2 12 2s-1.562.52-1.855 1.258C7.185 4.074 5 6.783 5 10v3.586l-1.707 1.707A.996.996 0 0 0 3 16v2a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-2a.996.996 0 0 0-.293-.707L19 13.586zM19 17H5v-.586l1.707-1.707A.996.996 0 0 0 7 14v-4c0-2.757 2.243-5 5-5s5 2.243 5 5v4c0 .266.105.52.293.707L19 16.414V17zm-7 5a2.98 2.98 0 0 0 2.818-2H9.182A2.98 2.98 0 0 0 12 22z" />
-											</svg>
-											<span className=" pulse"></span>
-										</Dropdown.Toggle>
-										<Dropdown.Menu className="slid1">
-											<div className="menu-header-content text-start border-bottom">
-												<div className="d-flex">
-													<h6 className="dropdown-title mb-1 tx-15 font-weight-semibold">
-														Notifications
-													</h6>
-													<span className="badge badge-pill badge-warning ms-auto my-auto float-end">
-														Mark All Read
-													</span>
-												</div>
-												<p className="dropdown-title-text subtext mb-0 op-6 pb-0 tx-12 ">
-													You have 4 unread Notifications
-												</p>
-											</div>
-
-											<PerfectScrollbar style={{ height: 280 }}>
-												<div className="main-notification-list Notification-scroll">
-													<Dropdown.Item
-														className="d-flex p-3 border-bottom"
-														href={`${import.meta.env.BASE_URL}pages/mail/mail/`}
-													>
-														<div className="notifyimg bg-pink">
-															<i className="far fa-folder-open text-white"></i>
-														</div>
-														<div className="ms-3">
-															<h5 className="notification-label mb-1">
-																New files available
-															</h5>
-															<div className="notification-subtext">
-																10 hour ago
-															</div>
-														</div>
-														<div className="ms-auto">
-															<i className="las la-angle-right text-end text-muted"></i>
-														</div>
-													</Dropdown.Item>
-													<Dropdown.Item
-														className="d-flex p-3  border-bottom"
-														href={`${import.meta.env.BASE_URL}pages/mail/mail/`}
-													>
-														<div className="notifyimg bg-purple">
-															<i className="fab fa-delicious text-white"></i>
-														</div>
-														<div className="ms-3">
-															<h5 className="notification-label mb-1">
-																Updates Available
-															</h5>
-															<div className="notification-subtext">
-																2 days ago
-															</div>
-														</div>
-														<div className="ms-auto">
-															<i className="las la-angle-right text-end text-muted"></i>
-														</div>
-													</Dropdown.Item>
-													<Dropdown.Item
-														className="d-flex p-3 border-bottom"
-														href={`${import.meta.env.BASE_URL}pages/mail/mail/`}
-													>
-														<div className="notifyimg bg-success">
-															<i className="fa fa-cart-plus text-white"></i>
-														</div>
-														<div className="ms-3">
-															<h5 className="notification-label mb-1">
-																New Order Received
-															</h5>
-															<div className="notification-subtext">
-																1 hour ago
-															</div>
-														</div>
-														<div className="ms-auto">
-															<i className="las la-angle-right text-end text-muted"></i>
-														</div>
-													</Dropdown.Item>
-													<Dropdown.Item
-														className="d-flex p-3 border-bottom"
-														href={`${import.meta.env.BASE_URL}pages/mail/mail/`}
-													>
-														<div className="notifyimg bg-warning">
-															<i className="far fa-envelope-open text-white"></i>
-														</div>
-														<div className="ms-3">
-															<h5 className="notification-label mb-1">
-																New review received
-															</h5>
-															<div className="notification-subtext">
-																1 day ago
-															</div>
-														</div>
-														<div className="ms-auto">
-															<i className="las la-angle-right text-end text-muted"></i>
-														</div>
-													</Dropdown.Item>
-													<Dropdown.Item
-														className="d-flex p-3 border-bottom"
-														href={`${import.meta.env.BASE_URL}pages/mail/mail/`}
-													>
-														<div className="notifyimg bg-danger">
-															<i className="fab fa-wpforms text-white"></i>
-														</div>
-														<div className="ms-3">
-															<h5 className="notification-label mb-1">
-																22 verified registrations
-															</h5>
-															<div className="notification-subtext">
-																2 hour ago
-															</div>
-														</div>
-														<div className="ms-auto">
-															<i className="las la-angle-right text-end text-muted"></i>
-														</div>
-													</Dropdown.Item>
-													<Dropdown.Item
-														className="d-flex p-3 border-bottom"
-														href={`${import.meta.env.BASE_URL}pages/mail/mail/`}
-													>
-														<div className="">
-															<i className="far fa-check-square text-white notifyimg bg-success"></i>
-														</div>
-														<div className="ms-3">
-															<h5 className="notification-label mb-1">
-																Project has been approved
-															</h5>
-															<span className="notification-subtext">
-																4 hour ago
-															</span>
-														</div>
-														<div className="ms-auto">
-															<i className="las la-angle-right text-end text-muted"></i>
-														</div>
-													</Dropdown.Item>
-												</div>
-											</PerfectScrollbar>
-											<div className="dropdown-footer">
-												<Link
-													className="btn btn-primary btn-sm btn-block"
-													to={`${import.meta.env.BASE_URL}pages/mail/mail/`}
-												>
-													VIEW ALL
-												</Link>
-											</div>
-										</Dropdown.Menu>
-									</Dropdown>
-									<li
-										className="nav-item full-screen fullscreen-button"
-										onClick={Fullscreen}
-									>
-										<Link className="new nav-link full-screen-link" to="#">
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												className="header-icon-svgs"
-												width="24"
-												height="24"
-												viewBox="0 0 24 24"
-											>
-												<path d="M5 5h5V3H3v7h2zm5 14H5v-5H3v7h7zm11-5h-2v5h-5v2h7zm-2-4h2V3h-7v2h5z" />
-											</svg>
-										</Link>
-									</li>
-									<li
-										className="dropdown main-header-message right-toggle"
-										onClick={() => Rightsidebar()}
-									>
-										<Link
-											to="#"
-											className="new nav-link nav-link pe-0"
-											data-bs-toggle="sidebar-right"
-											data-bs-target=".sidebar-right"
-										>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												className="header-icon-svgs"
-												width="24"
-												height="24"
-												viewBox="0 0 24 24"
-											>
-												<path d="M4 6h16v2H4zm4 5h12v2H8zm5 5h7v2h-7z" />
-											</svg>
-										</Link>
-									</li>
-									<li className="nav-link search-icon d-lg-none d-block">
-										<Form
-											className="navbar-form"
-											role="search"
-											onClick={() => responsivesearch()}
-										>
-											<div className="input-group">
-												<input
-													type="text"
-													className="form-control"
-													placeholder="Search"
-												/>
-												<span className="input-group-btn">
-													<Button
-														variant=""
-														type="reset"
-														className="btn btn-default"
-													>
-														<i className="fas fa-times"></i>
-													</Button>
-													<Button
-														variant=""
-														className="btn btn-default nav-link resp-btn"
-													>
-														<svg
-															xmlns="http://www.w3.org/2000/svg"
-															height="24px"
-															className="header-icon-svgs"
-															viewBox="0 0 24 24"
-															width="24px"
-															fill="#000000"
-														>
-															<path d="M0 0h24v24H0V0z" fill="none" />
-															<path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-														</svg>
-													</Button>
-												</span>
-											</div>
-										</Form>
-									</li>
-									<Dropdown className=" main-profile-menu nav nav-item nav-link ps-lg-2">
-										<Dropdown.Toggle
-											className="new nav-link profile-user d-flex"
-											variant=""
-										>
-											<img alt="" src={imagesData("female2")} className="" />
-										</Dropdown.Toggle>
-										<Dropdown.Menu>
-											<div className="menu-header-content p-3 border-bottom">
-												<div className="d-flex wd-100p">
-													<div className="main-img-user">
-														<img
-															alt=""
-															src={imagesData("female2")}
-															className=""
-														/>
-													</div>
-													<div className="ms-3 my-auto">
-														<h6 className="tx-15 font-weight-semibold mb-0">
-															Teri Dactyl
-														</h6>
-														<span className="dropdown-title-text subtext op-6  tx-12">
-															Premium Member
-														</span>
-													</div>
-												</div>
-											</div>
-											<Dropdown.Item
-												className="dropdown-item"
-												href={`${import.meta.env.BASE_URL}pages/profile/`}
-											>
-												<i className="far fa-user-circle"></i>Profile
-											</Dropdown.Item>
-											<Dropdown.Item
-												className="dropdown-item"
-												href={`${import.meta.env.BASE_URL}pages/mail/chat/`}
-											>
-												<i className="far fa-smile"></i> chat
-											</Dropdown.Item>
-											<Dropdown.Item
-												className="dropdown-item"
-												href={`${import.meta.env.BASE_URL}pages/mail/readmail`}
-											>
-												<i className="far fa-envelope "></i>Inbox
-											</Dropdown.Item>
-											<Dropdown.Item
-												className="dropdown-item"
-												href={`${import.meta.env.BASE_URL}pages/mail/mail/`}
-											>
-												<i className="far fa-comment-dots"></i>Messages
-											</Dropdown.Item>
-											<Dropdown.Item
-												className="dropdown-item"
-												href={`${
-													import.meta.env.BASE_URL
-												}pages/mail/mailsettings`}
-											>
-												<i className="far fa-sun"></i> Settings
-											</Dropdown.Item>
-											<Dropdown.Item
-												className="dropdown-item"
-												onClick={() => {
-													auth.signOut();
-													routeChange();
-												}}
-											>
-												<i className="far fa-arrow-alt-circle-left"></i> Sign
-												Out
-											</Dropdown.Item>
-										</Dropdown.Menu>
-									</Dropdown>
 								</ul>
 							</Navbar.Collapse>
-						</div>
-						<div className="d-flex">
-							<Link
-								className="demo-icon new nav-link"
-								to="#"
-								onClick={() => swichermainright()}
-							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									className="header-icon-svgs fa-spin"
-									width="24"
-									height="24"
-									viewBox="0 0 24 24"
-								>
-									<path d="M12 16c2.206 0 4-1.794 4-4s-1.794-4-4-4-4 1.794-4 4 1.794 4 4 4zm0-6c1.084 0 2 .916 2 2s-.916 2-2 2-2-.916-2-2 .916-2 2-2z" />
-									<path d="m2.845 16.136 1 1.73c.531.917 1.809 1.261 2.73.73l.529-.306A8.1 8.1 0 0 0 9 19.402V20c0 1.103.897 2 2 2h2c1.103 0 2-.897 2-2v-.598a8.132 8.132 0 0 0 1.896-1.111l.529.306c.923.53 2.198.188 2.731-.731l.999-1.729a2.001 2.001 0 0 0-.731-2.732l-.505-.292a7.718 7.718 0 0 0 0-2.224l.505-.292a2.002 2.002 0 0 0 .731-2.732l-.999-1.729c-.531-.92-1.808-1.265-2.731-.732l-.529.306A8.1 8.1 0 0 0 15 4.598V4c0-1.103-.897-2-2-2h-2c-1.103 0-2 .897-2 2v.598a8.132 8.132 0 0 0-1.896 1.111l-.529-.306c-.924-.531-2.2-.187-2.731.732l-.999 1.729a2.001 2.001 0 0 0 .731 2.732l.505.292a7.683 7.683 0 0 0 0 2.223l-.505.292a2.003 2.003 0 0 0-.731 2.733zm3.326-2.758A5.703 5.703 0 0 1 6 12c0-.462.058-.926.17-1.378a.999.999 0 0 0-.47-1.108l-1.123-.65.998-1.729 1.145.662a.997.997 0 0 0 1.188-.142 6.071 6.071 0 0 1 2.384-1.399A1 1 0 0 0 11 5.3V4h2v1.3a1 1 0 0 0 .708.956 6.083 6.083 0 0 1 2.384 1.399.999.999 0 0 0 1.188.142l1.144-.661 1 1.729-1.124.649a1 1 0 0 0-.47 1.108c.112.452.17.916.17 1.378 0 .461-.058.925-.171 1.378a1 1 0 0 0 .471 1.108l1.123.649-.998 1.729-1.145-.661a.996.996 0 0 0-1.188.142 6.071 6.071 0 0 1-2.384 1.399A1 1 0 0 0 13 18.7l.002 1.3H11v-1.3a1 1 0 0 0-.708-.956 6.083 6.083 0 0 1-2.384-1.399.992.992 0 0 0-1.188-.141l-1.144.662-1-1.729 1.124-.651a1 1 0 0 0 .471-1.108z" />
-								</svg>
-							</Link>
 						</div>
 					</div>
 				</div>

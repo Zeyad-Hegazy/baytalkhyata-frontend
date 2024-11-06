@@ -15,6 +15,7 @@ import { imagesData } from "../../common/commonimages";
 import * as Dashboarddata from "../../common/chartdata";
 import { Statistics1, Viewers } from "../../common/chartdata";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
+
 import {
 	COLUMNS1,
 	DATATABLE2,
