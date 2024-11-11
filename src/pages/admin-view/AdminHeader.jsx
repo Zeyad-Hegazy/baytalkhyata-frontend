@@ -2,10 +2,52 @@ import { Fragment, useEffect } from "react";
 import { Navbar, Dropdown, Button } from "react-bootstrap";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { imagesData } from "../../common/commonimages";
 import * as Switcherdata from "../../common/switcherdata";
 import { logOut } from "../../api/auth";
+import { getMessagesList } from "../../api/admin/messages";
+
+const ListItem = ({ senderId, senderImage, sender, text, createdAt }) => {
+	function formatDate(isoString) {
+		const date = new Date(isoString);
+
+		const options = {
+			month: "short",
+			day: "numeric",
+			hour: "numeric",
+			minute: "numeric",
+			hour12: true,
+		};
+
+		return new Intl.DateTimeFormat("en-US", options).format(date);
+	}
+
+	const navigate = useNavigate();
+
+	const handleClick = () => {
+		navigate(`/admin/chat/${senderId}`);
+	};
+	return (
+		<Dropdown.Item
+			className="dropdown-item d-flex border-bottom"
+			onClick={handleClick}
+		>
+			<img className="  drop-img  cover-image  " alt="" src={senderImage} />
+			<span className="avatar-status bg-teal avatar-status1"></span>
+
+			<div className="wd-90p">
+				<div className="d-flex">
+					<h5 className="mb-0 name">{sender}</h5>
+				</div>
+				<p className="mb-0 desc">{text}</p>
+				<p className="time mb-0 text-start float-start ms-2 mt-2">
+					{formatDate(createdAt)}
+				</p>
+			</div>
+		</Dropdown.Item>
+	);
+};
 
 export default function AdminHeader() {
 	useEffect(() => {
@@ -79,6 +121,15 @@ export default function AdminHeader() {
 	}
 
 	const dispatch = useDispatch();
+	const list = useSelector((state) => state.messagesList);
+
+	useEffect(() => {
+		const fetchListMessages = async () => {
+			const response = await getMessagesList();
+			dispatch({ type: "GET_MESSAGES_LIST", payload: response.data.result });
+		};
+		fetchListMessages();
+	}, [dispatch]);
 
 	let navigate = useNavigate();
 
@@ -213,7 +264,9 @@ export default function AdminHeader() {
 											>
 												<path d="M20 4H4c-1.103 0-2 .897-2 2v12c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm0 2v.511l-8 6.223-8-6.222V6h16zM4 18V9.044l7.386 5.745a.994.994 0 0 0 1.228 0L20 9.044 20.002 18H4z" />
 											</svg>
-											<span className="badge bg-secondary header-badge">5</span>
+											<span className="badge bg-secondary header-badge">
+												{list.length}
+											</span>
 										</Dropdown.Toggle>
 										<Dropdown.Menu className="slid1">
 											<div className="menu-header-content text-start border-bottom">
@@ -221,12 +274,17 @@ export default function AdminHeader() {
 													<h6 className="dropdown-title mb-1 tx-15 font-weight-semibold">
 														Messages
 													</h6>
-													<span className="badge badge-pill badge-warning ms-auto my-auto float-end">
+													<button
+														className="badge badge-pill badge-warning ms-auto my-auto float-end border-0"
+														onClick={() =>
+															dispatch({ type: "RMV_MESSAGES_LIST" })
+														}
+													>
 														Mark All Read
-													</span>
+													</button>
 												</div>
 												<p className="dropdown-title-text subtext mb-0 op-6 pb-0 tx-12 ">
-													You have 4 unread messages
+													You have {list.length} unread messages
 												</p>
 											</div>
 
@@ -238,127 +296,26 @@ export default function AdminHeader() {
 												}}
 											>
 												<div className="main-message-list chat-scroll">
-													<Dropdown.Item
-														href={`${import.meta.env.BASE_URL}pages/mail/chat/`}
-														className="dropdown-item d-flex border-bottom"
-													>
-														<img
-															className="  drop-img  cover-image  "
-															alt=""
-															src={imagesData("female3")}
-														/>
-														<span className="avatar-status bg-teal avatar-status1"></span>
-
-														<div className="wd-90p">
-															<div className="d-flex">
-																<h5 className="mb-0 name">Teri Dactyl</h5>
-															</div>
-															<p className="mb-0 desc">
-																I'm sorry but i'm not sure how to help you with
-																that......
-															</p>
-															<p className="time mb-0 text-start float-start ms-2 mt-2">
-																Mar 15 3:55 PM
-															</p>
-														</div>
-													</Dropdown.Item>
-													<Dropdown.Item
-														href={`${import.meta.env.BASE_URL}pages/mail/chat/`}
-														className="dropdown-item d-flex border-bottom"
-													>
-														<img
-															className="drop-img cover-image"
-															alt=""
-															src={imagesData("female2")}
-														/>
-														<span className="avatar-status bg-teal avatar-status2"></span>
-
-														<div className="wd-90p">
-															<div className="d-flex">
-																<h5 className="mb-0 name">Allie Grater</h5>
-															</div>
-															<p className="mb-0 desc">
-																All set ! Now, time to get to you now......
-															</p>
-															<p className="time mb-0 text-start float-start ms-2 mt-2">
-																Mar 06 01:12 AM
-															</p>
-														</div>
-													</Dropdown.Item>
-													<Dropdown.Item
-														href={`${import.meta.env.BASE_URL}pages/mail/chat/`}
-														className="dropdown-item d-flex border-bottom"
-													>
-														<img
-															className="drop-img cover-image"
-															alt=""
-															src={imagesData("female9")}
-														/>
-														<span className="avatar-status bg-teal avatar-status3 "></span>
-
-														<div className="wd-90p">
-															<div className="d-flex">
-																<h5 className="mb-0 name">Aida Bugg</h5>
-															</div>
-															<p className="mb-0 desc">
-																Are you ready to pickup your Delivery...
-															</p>
-															<p className="time mb-0 text-start float-start ms-2 mt-2">
-																Feb 25 10:35 AM
-															</p>
-														</div>
-													</Dropdown.Item>
-													<Dropdown.Item
-														href={`${import.meta.env.BASE_URL}pages/mail/chat/`}
-														className="dropdown-item d-flex border-bottom"
-													>
-														<img
-															className="drop-img cover-image"
-															alt=""
-															src={imagesData("female12")}
-														/>
-														<span className="avatar-status bg-teal avatar-status4"></span>
-														<div className="wd-90p">
-															<div className="d-flex">
-																<h5 className="mb-0 name">John Quil</h5>
-															</div>
-															<p className="mb-0 desc">
-																Here are some products ...
-															</p>
-															<p className="time mb-0 text-start float-start ms-2 mt-2">
-																Feb 12 05:12 PM
-															</p>
-														</div>
-													</Dropdown.Item>
-													<Dropdown.Item
-														href={`${import.meta.env.BASE_URL}pages/mail/chat/`}
-														className="dropdown-item d-flex border-bottom"
-													>
-														<img
-															className="drop-img cover-image"
-															alt=""
-															src={imagesData("female5")}
-														/>
-														<span className="avatar-status bg-teal avatar-status5"></span>
-
-														<div className="wd-90p">
-															<div className="d-flex">
-																<h5 className="mb-0 name">Liz Erd</h5>
-															</div>
-															<p className="mb-0 desc">
-																I'm sorry but i'm not sure how...
-															</p>
-															<p className="time mb-0 text-start float-start ms-2 mt-2">
-																Jan 29 03:16 PM
-															</p>
-														</div>
-													</Dropdown.Item>
+													{list.length > 0 ? (
+														list.map((item) => (
+															<ListItem
+																key={item._id}
+																senderId={item.senderId}
+																senderImage={item.senderImage}
+																sender={item.sender}
+																text={item.text}
+																createdAt={item.createdAt}
+															/>
+														))
+													) : (
+														<p className="text-center mt-4">No Messages</p>
+													)}
 												</div>
 											</PerfectScrollbar>
 											<div className="text-center dropdown-footer">
 												<Link
 													className="btn btn-primary btn-sm btn-block text-center"
-													to={`${import.meta.env.BASE_URL}pages/mail/chat/`}
+													to={`/admin/chat`}
 												>
 													VIEW ALL
 												</Link>

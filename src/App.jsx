@@ -81,7 +81,7 @@ const App = () => {
 							/>
 
 							<Route
-								path="chat"
+								path="chat/:senderId?"
 								element={<PrivateRoute element={<Chat />} roles={["admin"]} />}
 							/>
 							<Route

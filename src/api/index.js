@@ -2,6 +2,9 @@ import axios from "axios";
 
 // import { productionHost, developmentHost } from "../constants/host";
 
+// const API = axios.create({
+// 	baseURL: `http://localhost:3000/api/v1`,
+// });
 const API = axios.create({
 	baseURL: `https://memories-i47i.onrender.com/api/v1`,
 });

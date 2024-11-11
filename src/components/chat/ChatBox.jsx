@@ -9,9 +9,11 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:3000");
+// const socket = io("http://localhost:3000");
+const socket = io("https://memories-i47i.onrender.com/");
 
 const ChatBox = ({ conversation }) => {
+	console.log(conversation);
 	const admin = useSelector((state) => state.auth.profile);
 	const student = useSelector((state) =>
 		state.students.find((s) => s._id === conversation?.members?.student)

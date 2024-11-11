@@ -11,6 +11,7 @@ import { categories } from "./categories/reducer";
 import { categoryItems } from "./categoryItems/reducer";
 import { conversation } from "./conversation/reducer";
 import { messages } from "./message/reducer";
+import { messagesList } from "./message/listReducer";
 import { policies } from "./policy/reducer";
 
 const rootred = combineReducers({
@@ -24,9 +25,10 @@ const rootred = combineReducers({
 	categoryItems,
 	conversation,
 	messages,
+	messagesList,
+	policies,
 	toastar,
 	loading,
-	policies,
 });
 
 export default rootred;
