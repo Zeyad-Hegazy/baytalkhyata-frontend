@@ -12,3 +12,6 @@ export const getChapterLevels = (chapterId) =>
 
 export const getlevelSections = (levelId) =>
 	API.get("/admin/chapter/level/section/" + levelId);
+
+export const getSectionItem = (itemId) =>
+	API.get("/admin/chapter/level/section/item/" + itemId);

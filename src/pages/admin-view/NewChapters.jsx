@@ -9,6 +9,7 @@ import {
 	addLevelToChapter,
 	getChapterLevels,
 	getlevelSections,
+	getSectionItem,
 } from "../../api/admin/chapter";
 import Quiz from "./Quiz";
 
@@ -50,6 +51,9 @@ const NewChapters = () => {
 	const [openFinalQuiz, setOpenFinalQuiz] = useState(false);
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	const [itemSectionOpend, setItemSectionOpned] = useState(false);
+	const [itemSeciton, setItemSeciton] = useState(null);
 
 	useEffect(() => {
 		if (chapterId) {
@@ -372,6 +376,28 @@ const NewChapters = () => {
 																<strong>Title:</strong> {item.title}
 															</p>
 															<p>
+																<strong>The {item.type}:</strong>{" "}
+																<Button
+																	className="ms-3"
+																	onClick={async () => {
+																		try {
+																			const response = await getSectionItem(
+																				item._id
+																			);
+																			setItemSeciton(response.data.result);
+																			setItemSectionOpned(true);
+																		} catch (error) {
+																			console.error(
+																				"Error fetching chapter levels:",
+																				error
+																			);
+																		}
+																	}}
+																>
+																	<i className="fa fa-solid fa-eye"></i>
+																</Button>
+															</p>
+															<p>
 																<strong>Points:</strong> {item.points}
 															</p>
 														</div>
@@ -479,6 +505,66 @@ const NewChapters = () => {
 					</Button>
 				</Modal.Footer>
 			</Modal>
+
+			{itemSeciton && (
+				<Modal
+					show={itemSectionOpend}
+					onHide={() => {
+						setItemSectionOpned(false);
+						setItemSeciton(null);
+					}}
+				>
+					<Modal.Header closeButton>
+						<Modal.Title>{itemSeciton.title}</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>
+						<p>
+							<strong>Description:</strong> {itemSeciton.description}
+						</p>
+						<p>
+							<strong>Type:</strong> {itemSeciton.type}
+						</p>
+						<p>
+							<strong>Size:</strong> {itemSeciton.size}
+						</p>
+						<p>
+							<strong>Points:</strong> {itemSeciton.points}
+						</p>
+
+						<div className="mt-3">
+							{itemSeciton.type === "video" && (
+								<video controls width="100%">
+									<source src={itemSeciton.file} type="video/mp4" />
+									Your browser does not support the video tag.
+								</video>
+							)}
+							{itemSeciton.type === "image" && (
+								<img
+									src={itemSeciton.file}
+									alt={itemSeciton.title}
+									style={{ width: "100%" }}
+								/>
+							)}
+							{itemSeciton.type === "audio" && (
+								<audio controls>
+									<source src={itemSeciton.file} type="audio/mpeg" />
+									Your browser does not support the audio element.
+								</audio>
+							)}
+							{itemSeciton.type === "pdf" && (
+								<a
+									href={itemSeciton.file}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="btn btn-primary"
+								>
+									View PDF
+								</a>
+							)}
+						</div>
+					</Modal.Body>
+				</Modal>
+			)}
 		</>
 	);
 };
