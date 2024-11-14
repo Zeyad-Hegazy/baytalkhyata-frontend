@@ -6,3 +6,6 @@ export const addLevelToChapter = (id, formData) =>
 
 export const createQuiz = (formData) =>
 	API.patch("/admin/chapter/quiz", formData);
+
+export const getChapterLevels = (chapterId) =>
+	API.get("/admin/chapter/levels/" + chapterId);

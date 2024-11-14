@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Card, Col, Row, Form, Modal, Spinner } from "react-bootstrap";
 import Dropzone from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { addLevelToChapter } from "../../api/admin/chapter";
+import { addLevelToChapter, getChapterLevels } from "../../api/admin/chapter";
 import Quiz from "./Quiz";
+
+import { useParams } from "react-router-dom";
 
 const formatBytes = (bytes) => {
 	const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
@@ -20,6 +22,8 @@ function removeBase64Prefix(base64String) {
 }
 
 const NewChapters = () => {
+	const { chapterId } = useParams();
+	const [levels, setLevels] = useState([]);
 	const dispatch = useDispatch();
 	const chapter = useSelector((state) => state.chapter.chapter);
 	const [showForm, setShowForm] = useState(false);
@@ -41,6 +45,21 @@ const NewChapters = () => {
 	const [openFinalQuiz, setOpenFinalQuiz] = useState(false);
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	useEffect(() => {
+		if (chapterId) {
+			const fetchLevels = async () => {
+				try {
+					const response = await getChapterLevels(chapterId);
+					setLevels(response.data.result.levels);
+					console.log(response.data.result.levels);
+				} catch (error) {
+					console.error("Error fetching chapter levels:", error);
+				}
+			};
+			fetchLevels();
+		}
+	}, [chapterId, setIsSubmitting]);
 
 	const openItemModal = (sectionIndex) => {
 		setCurrentSectionIndex(sectionIndex);
@@ -146,6 +165,7 @@ const NewChapters = () => {
 				fileBuffer: null,
 				size: "",
 			});
+			setShowForm(false);
 		}
 	};
 
@@ -161,7 +181,18 @@ const NewChapters = () => {
 							</Card.Header>
 							<Card.Body>{/* Additional chapter info if needed */}</Card.Body>
 						</Card>
+						{levels.length > 0 &&
+							levels.map((level) => (
+								<Col key={level._id} sm={12}>
+									<Card>
+										<Card.Header style={{ cursor: "pointer" }}>
+											{level.title}
+										</Card.Header>
+									</Card>
+								</Col>
+							))}
 					</Col>
+
 					<Col sm={9}>
 						<div className="d-flex gap-4">
 							<div className="mt-4">

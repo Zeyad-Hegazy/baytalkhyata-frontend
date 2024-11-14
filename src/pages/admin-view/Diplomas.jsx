@@ -18,7 +18,7 @@ import {
 	updateDiploma,
 	assignDiploma,
 } from "../../api/admin/diplomas";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createChapter } from "./../../api/admin/chapter";
 
 const formatDate = (isoDate) => {
@@ -276,10 +276,15 @@ const Diplomas = () => {
 												<ul className="list-unstyled">
 													{diploma.chapters.length > 0 ? (
 														diploma.chapters.map((chapter, index) => (
-															<li key={index}>
-																{"- Chapter "} {index + 1} {" :"}{" "}
-																{chapter.title}
-															</li>
+															<Link
+																key={index}
+																to={"/admin/chapters/" + chapter._id}
+															>
+																<li>
+																	{"- Chapter "} {index + 1} {" :"}{" "}
+																	{chapter.title}
+																</li>
+															</Link>
 														))
 													) : (
 														<li>No chapters available</li>
