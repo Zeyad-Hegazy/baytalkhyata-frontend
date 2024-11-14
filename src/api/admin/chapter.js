@@ -9,3 +9,6 @@ export const createQuiz = (formData) =>
 
 export const getChapterLevels = (chapterId) =>
 	API.get("/admin/chapter/levels/" + chapterId);
+
+export const getlevelSections = (levelId) =>
+	API.get("/admin/chapter/level/section/" + levelId);

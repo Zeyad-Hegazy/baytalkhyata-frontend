@@ -5,7 +5,11 @@ import { Button, Card, Col, Row, Form, Modal, Spinner } from "react-bootstrap";
 import Dropzone from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { addLevelToChapter, getChapterLevels } from "../../api/admin/chapter";
+import {
+	addLevelToChapter,
+	getChapterLevels,
+	getlevelSections,
+} from "../../api/admin/chapter";
 import Quiz from "./Quiz";
 
 import { useParams } from "react-router-dom";
@@ -24,6 +28,7 @@ function removeBase64Prefix(base64String) {
 const NewChapters = () => {
 	const { chapterId } = useParams();
 	const [levels, setLevels] = useState([]);
+	const [levelData, setLevelData] = useState(null);
 	const dispatch = useDispatch();
 	const chapter = useSelector((state) => state.chapter.chapter);
 	const [showForm, setShowForm] = useState(false);
@@ -52,7 +57,6 @@ const NewChapters = () => {
 				try {
 					const response = await getChapterLevels(chapterId);
 					setLevels(response.data.result.levels);
-					console.log(response.data.result.levels);
 				} catch (error) {
 					console.error("Error fetching chapter levels:", error);
 				}
@@ -169,6 +173,17 @@ const NewChapters = () => {
 		}
 	};
 
+	const fetchLevelData = async (levelId) => {
+		try {
+			const response = await getlevelSections(levelId);
+			setLevelData(response.data.result);
+			setShowForm(false);
+			setOpenFinalQuiz(false);
+		} catch (error) {
+			console.error("Error fetching chapter levels:", error);
+		}
+	};
+
 	return (
 		<>
 			<div className="m-4 position-relative">
@@ -184,7 +199,7 @@ const NewChapters = () => {
 						{levels.length > 0 ? (
 							levels.map((level) => (
 								<Col key={level._id} sm={12}>
-									<Card>
+									<Card onClick={() => fetchLevelData(level._id)}>
 										<Card.Header style={{ cursor: "pointer" }}>
 											{level.title}
 										</Card.Header>
@@ -340,6 +355,32 @@ const NewChapters = () => {
 									chapterId={chapter._id}
 									setOpenFinalQuiz={setOpenFinalQuiz}
 								/>
+							</Card>
+						)}
+						{levelData && (
+							<Card key={levelData._id} className="mt-4">
+								<Card.Header>{levelData.title}</Card.Header>
+								<Card.Body>
+									{levelData.sections.map((section) => (
+										<div key={section._id} className="mb-3">
+											<h5>{section.title}</h5>
+											<ul className="list-unstyled">
+												{section.items.map((item) => (
+													<li key={item._id} className="p-2 border-bottom">
+														<div>
+															<p>
+																<strong>Title:</strong> {item.title}
+															</p>
+															<p>
+																<strong>Points:</strong> {item.points}
+															</p>
+														</div>
+													</li>
+												))}
+											</ul>
+										</div>
+									))}
+								</Card.Body>
 							</Card>
 						)}
 					</Col>
