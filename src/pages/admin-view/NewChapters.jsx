@@ -181,7 +181,7 @@ const NewChapters = () => {
 							</Card.Header>
 							<Card.Body>{/* Additional chapter info if needed */}</Card.Body>
 						</Card>
-						{levels.length > 0 &&
+						{levels.length > 0 ? (
 							levels.map((level) => (
 								<Col key={level._id} sm={12}>
 									<Card>
@@ -190,7 +190,14 @@ const NewChapters = () => {
 										</Card.Header>
 									</Card>
 								</Col>
-							))}
+							))
+						) : (
+							<Card>
+								<Card.Header style={{ textAlign: "center" }}>
+									<p>No levels in this chapter</p>
+								</Card.Header>
+							</Card>
+						)}
 					</Col>
 
 					<Col sm={9}>
