@@ -9,8 +9,11 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import io from "socket.io-client";
 
-// const socket = io("http://localhost:3000");
-const socket = io("http://byt-backend:5000");
+
+const socketHost = import.meta.env.VITE_SOCKET;
+
+const socket = io(socketHost);
+
 
 const ChatBox = ({ conversation }) => {
 	console.log(conversation);

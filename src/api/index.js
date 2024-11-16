@@ -1,9 +1,10 @@
 import axios from "axios";
 
-// import { productionHost, developmentHost } from "../constants/host";
+const apiUrl = import.meta.env.VITE_HOST;
 
 const API = axios.create({
-	baseURL: `http://localhost:5005/api/v1`,
+
+	baseURL: apiUrl,
 });
 
 

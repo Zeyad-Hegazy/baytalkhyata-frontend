@@ -1,8 +1,7 @@
 import { Fragment, useEffect } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Card, Col, Dropdown, Row } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
-import { imagesData } from "../../common/commonimages";
+import { Card, Col, Row } from "react-bootstrap";
+import { useParams } from "react-router-dom";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
 
 import Conversation from "../../components/chat/Conversation";
@@ -93,9 +92,5 @@ const Chat = () => {
 		</Fragment>
 	);
 };
-
-Chat.propTypes = {};
-
-Chat.defaultProps = {};
 
 export default Chat;
