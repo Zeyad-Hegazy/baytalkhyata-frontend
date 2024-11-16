@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import io from "socket.io-client";
 
 // const socket = io("http://localhost:3000");
-const socket = io("https://memories-i47i.onrender.com/");
+const socket = io("http://byt-backend:5000");
 
 const ChatBox = ({ conversation }) => {
 	console.log(conversation);
