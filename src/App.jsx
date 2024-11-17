@@ -18,6 +18,9 @@ import NewChapters from "./pages/admin-view/NewChapters";
 import Notifications from "./pages/admin-view/Notifications";
 import Policy from "./pages/admin-view/Policy";
 import FQA from "./pages/admin-view/FQA";
+import ChaptersPage from "./pages/admin-view/ChaptersPage";
+import LevelsPage from "./pages/admin-view/LevelsPage";
+import ItemsPage from "./pages/admin-view/ItemsPage";
 
 const App = () => {
 	const toastar = useSelector((state) => state.toastar);
@@ -70,6 +73,25 @@ const App = () => {
 								path="diplomas"
 								element={
 									<PrivateRoute element={<Diplomas />} roles={["admin"]} />
+								}
+							/>
+
+							<Route
+								path="diplomas/chapters/managment/:diplomaId"
+								element={
+									<PrivateRoute element={<ChaptersPage />} roles={["admin"]} />
+								}
+							/>
+							<Route
+								path="levels/managment/:chapterId"
+								element={
+									<PrivateRoute element={<LevelsPage />} roles={["admin"]} />
+								}
+							/>
+							<Route
+								path="items/managment/:levelId"
+								element={
+									<PrivateRoute element={<ItemsPage />} roles={["admin"]} />
 								}
 							/>
 

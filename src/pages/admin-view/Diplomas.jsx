@@ -18,8 +18,7 @@ import {
 	updateDiploma,
 	assignDiploma,
 } from "../../api/admin/diplomas";
-import { Link, useNavigate } from "react-router-dom";
-import { createChapter } from "./../../api/admin/chapter";
+import { Link } from "react-router-dom";
 
 const formatDate = (isoDate) => {
 	const date = new Date(isoDate);
@@ -31,7 +30,6 @@ const formatDate = (isoDate) => {
 
 const Diplomas = () => {
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -50,11 +48,6 @@ const Diplomas = () => {
 	const [deleteItemId, setDeleteItemId] = useState(null);
 	const [isEdit, setIsEdit] = useState(false);
 	const [editItemId, setEditItemId] = useState(null);
-
-	const [chapterTitle, setChapterTitle] = useState("");
-	const [showChapterModal, setShowChapterModal] = useState(false);
-
-	const [diplomaId, setDiplomaId] = useState("");
 
 	const [formState, setFormState] = useState({
 		title: "",
@@ -128,25 +121,6 @@ const Diplomas = () => {
 		dispatch({ type: "open", payload: { message: response.data.message } });
 		setDeleteItemId(null);
 		setConfirmDeleteShow(false);
-	};
-
-	const handleSaveChapter = async () => {
-		const response = await createChapter({
-			title: chapterTitle,
-			diploma: diplomaId,
-		});
-		dispatch({ type: "ADD_CHAPTER", payload: response.data.result });
-		dispatch({ type: "open", payload: { message: response.data.message } });
-		navigate("/admin/chapters");
-	};
-
-	const [openCards, setOpenCards] = useState({});
-
-	const toggleCollapse = (id) => {
-		setOpenCards((prevState) => ({
-			...prevState,
-			[id]: !prevState[id],
-		}));
 	};
 
 	const handleAssignClick = (diplomaId) => {
@@ -257,51 +231,11 @@ const Diplomas = () => {
 												</span>
 											</h6>
 										</div>
-										<Button
-											variant="link"
-											onClick={() => toggleCollapse(diploma._id)}
-											aria-controls={`chapters-collapse-${diploma._id}`}
-											aria-expanded={openCards[diploma._id]}
-											className="mt-2"
-										>
-											{openCards[diploma._id]
-												? "Hide Chapters ▲"
-												: "Show Chapters ▼"}
-										</Button>
-										<Collapse in={openCards[diploma._id]}>
-											<div
-												id={`chapters-collapse-${diploma._id}`}
-												className="mt-3"
-											>
-												<ul className="list-unstyled">
-													{diploma.chapters.length > 0 ? (
-														diploma.chapters.map((chapter, index) => (
-															<Link
-																key={index}
-																to={"/admin/chapters/" + chapter._id}
-															>
-																<li>
-																	{"- Chapter "} {index + 1} {" :"}{" "}
-																	{chapter.title}
-																</li>
-															</Link>
-														))
-													) : (
-														<li>No chapters available</li>
-													)}
-												</ul>
-											</div>
-										</Collapse>
 									</Card.Footer>
 									<div className="m-2">
-										<Button
-											onClick={() => {
-												setShowChapterModal(true);
-												setDiplomaId(diploma._id);
-											}}
-										>
-											Add Chapter
-										</Button>
+										<Link to={"chapters/managment/" + diploma._id}>
+											<Button>Manage Chapters</Button>
+										</Link>
 									</div>
 								</Card>
 							</Col>
@@ -421,46 +355,6 @@ const Diplomas = () => {
 						Delete
 					</Button>
 					<Button onClick={() => setConfirmDeleteShow(false)}>Cancel</Button>
-				</Modal.Footer>
-			</Modal>
-
-			<Modal
-				show={showChapterModal}
-				onHide={() => {
-					setChapterTitle("");
-					setShowChapterModal(false);
-				}}
-			>
-				<Modal.Header closeButton>
-					<Modal.Title>{"Add New Chapter"}</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>
-					<Form onSubmit={handleSaveChapter}>
-						<Form.Group className="mb-3" controlId="formTitle">
-							<Form.Label>Title</Form.Label>
-							<Form.Control
-								type="text"
-								placeholder="Enter title"
-								name="title"
-								value={chapterTitle}
-								onChange={(e) => setChapterTitle(e.target.value)}
-							/>
-						</Form.Group>
-					</Form>
-				</Modal.Body>
-				<Modal.Footer>
-					<Button
-						variant="secondary"
-						onClick={() => {
-							setChapterTitle("");
-							setShowChapterModal(false);
-						}}
-					>
-						Close
-					</Button>
-					<Button variant="primary" onClick={handleSaveChapter}>
-						{"Add Chapter"}
-					</Button>
 				</Modal.Footer>
 			</Modal>
 
