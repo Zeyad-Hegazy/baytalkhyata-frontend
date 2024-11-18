@@ -1,4 +1,13 @@
-import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
+import {
+	Button,
+	Card,
+	Col,
+	Form,
+	Modal,
+	ProgressBar,
+	Row,
+	Spinner,
+} from "react-bootstrap";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -35,6 +44,11 @@ const ItemsPage = () => {
 		fileBuffer: null,
 		size: "",
 	});
+
+	const [uploadProgress, setUploadProgress] = useState(0);
+	const [isUploading, setIsUploading] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -54,7 +68,28 @@ const ItemsPage = () => {
 			const file = acceptedFiles[0];
 			const reader = new FileReader();
 
-			reader.onloadend = () => {
+			const MAX_SIZE = 1024 * 1024 * 500;
+			if (file.size > MAX_SIZE) {
+				alert(
+					"File size exceeds the 500MB limit. Please upload a smaller file."
+				);
+				setIsUploading(false);
+				return;
+			}
+
+			reader.addEventListener("loadstart", () => {
+				setIsUploading(true);
+				setUploadProgress(2);
+			});
+
+			reader.addEventListener("progress", (e) => {
+				if (e.lengthComputable) {
+					const progress = Math.round((e.loaded / e.total) * 100);
+					setUploadProgress(progress);
+				}
+			});
+
+			reader.addEventListener("loadend", () => {
 				const base64String = reader.result;
 
 				setItem((prevItem) => ({
@@ -62,11 +97,14 @@ const ItemsPage = () => {
 					fileBuffer: removeBase64Prefix(base64String),
 					size: formatBytes(file.size),
 				}));
-			};
 
-			reader.onerror = () => {
+				setUploadProgress(100);
+				setIsUploading(false);
+			});
+
+			reader.addEventListener("error", () => {
 				console.error("Error reading file as base64:", reader.error);
-			};
+			});
 
 			reader.readAsDataURL(file);
 		}
@@ -74,6 +112,7 @@ const ItemsPage = () => {
 
 	const addItemToSection = async () => {
 		try {
+			setIsSubmitting(true);
 			const response = await addItemToLevel(levelId, { item });
 			dispatch({
 				type: "open",
@@ -92,6 +131,7 @@ const ItemsPage = () => {
 				size: "",
 			});
 			setShowModal(false);
+			setIsSubmitting(false);
 		}
 	};
 
@@ -259,6 +299,13 @@ const ItemsPage = () => {
 						>
 							{item.type} uploaded
 						</div>
+					) : isUploading ? (
+						<ProgressBar
+							now={uploadProgress}
+							striped
+							animated
+							className="m-4"
+						/>
 					) : (
 						<Dropzone onDrop={handleFileUpload}>
 							{({ getRootProps, getInputProps, isDragActive }) => (
@@ -302,11 +349,37 @@ const ItemsPage = () => {
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button variant="secondary" onClick={() => setShowModal(false)}>
+					<Button
+						variant="secondary"
+						onClick={() => setShowModal(false)}
+						disabled={isSubmitting || isUploading}
+					>
 						Close
 					</Button>
-					<Button variant="primary" onClick={addItemToSection}>
-						Add Item
+					<Button
+						variant="primary"
+						onClick={addItemToSection}
+						disabled={
+							isSubmitting ||
+							isUploading ||
+							!item.title ||
+							!item.type ||
+							!item.points ||
+							!item.description ||
+							!item.fileBuffer
+						}
+					>
+						{isSubmitting ? (
+							<Spinner
+								as="span"
+								animation="border"
+								size="sm"
+								role="status"
+								aria-hidden="true"
+							/>
+						) : (
+							"Add Item"
+						)}
 					</Button>
 				</Modal.Footer>
 			</Modal>
