@@ -9,6 +9,7 @@ import {
 	Form,
 	Button,
 	Modal,
+	Spinner,
 } from "react-bootstrap";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
 import { Link } from "react-router-dom";
@@ -33,6 +34,7 @@ const Library = () => {
 	const [deleteItemId, setDeleteItemId] = useState(null);
 	const [isEdit, setIsEdit] = useState(false);
 	const [editItemId, setEditItemId] = useState(null);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const getPdfFileHandler = async (id) => {
 		const response = await getPdfFile(id);
@@ -45,8 +47,15 @@ const Library = () => {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const response = await getPdfItems();
-			dispatch({ type: "GET_LIBITEMS", payload: response.data.result });
+			try {
+				setIsLoading(true);
+				const response = await getPdfItems();
+				dispatch({ type: "GET_LIBITEMS", payload: response.data.result });
+			} catch (error) {
+				console.error("Error fetching chapter levels:", error);
+			} finally {
+				setIsLoading(false);
+			}
 		};
 		fetchData();
 	}, [dispatch]);
@@ -161,68 +170,76 @@ const Library = () => {
 							Add New PDF
 						</Button>
 					</Row>
-					<Row>
-						{pdfItems.length > 0 ? (
-							pdfItems.map((item) => (
-								<Col sm={6} xl={2} md={4} key={item._id}>
-									{" "}
-									{/* Use a unique property as key */}
-									<Card className="p-0">
-										<div className="d-flex align-items-center px-3 pt-3">
-											<Dropdown className="float-end optiondots ms-auto">
-												<Dropdown.Toggle variant="" className="option-dots">
-													<i className="fe fe-more-vertical"></i>
-												</Dropdown.Toggle>
-												<Dropdown.Menu>
-													<Dropdown.Item
-														href="#"
-														className="d-inline-flex align-items-center"
-														onClick={() => editItemHandler(item)}
-													>
-														<i className="fe fe-edit me-2"></i> Edit
-													</Dropdown.Item>
-													<Dropdown.Item
-														href="#"
-														className="d-inline-flex align-items-center"
-														onClick={() => {
-															setConfirmDeleteShow(true);
-															setDeleteItemId(item._id);
-														}}
-													>
-														<i className="fe fe-trash me-2"></i> Delete
-													</Dropdown.Item>
-												</Dropdown.Menu>
-											</Dropdown>
-										</div>
-										<Card.Body className="pt-0 text-center">
-											<div className="file-manger-icon">
-												<div
-													style={{ cursor: "pointer", marginBottom: "1rem" }}
-													onClick={() => getPdfFileHandler(item._id)}
-												>
-													<img
-														src={item.image}
-														alt={item.title}
-														className="br-7"
-													/>
-												</div>
+					{isLoading ? (
+						<div className="text-center my-5">
+							<Spinner animation="border" variant="primary" />
+							<p className="mt-2">Loading...</p>
+						</div>
+					) : (
+						<Row>
+							{pdfItems.length > 0 ? (
+								pdfItems.map((item) => (
+									<Col sm={6} xl={2} md={4} key={item._id}>
+										<Card className="p-0">
+											<div className="d-flex align-items-center px-3 pt-3">
+												<Dropdown className="float-end optiondots ms-auto">
+													<Dropdown.Toggle variant="" className="option-dots">
+														<i className="fe fe-more-vertical"></i>
+													</Dropdown.Toggle>
+													<Dropdown.Menu>
+														<Dropdown.Item
+															href="#"
+															className="d-inline-flex align-items-center"
+															onClick={() => editItemHandler(item)}
+														>
+															<i className="fe fe-edit me-2"></i> Edit
+														</Dropdown.Item>
+														<Dropdown.Item
+															href="#"
+															className="d-inline-flex align-items-center"
+															onClick={() => {
+																setConfirmDeleteShow(true);
+																setDeleteItemId(item._id);
+															}}
+														>
+															<i className="fe fe-trash me-2"></i> Delete
+														</Dropdown.Item>
+													</Dropdown.Menu>
+												</Dropdown>
 											</div>
-											<h6 className="mb-1 font-weight-semibold">
-												{item.title}
-											</h6>
-											<span>{item.size}</span>
-										</Card.Body>
+											<Card.Body className="pt-0 text-center">
+												<div className="file-manger-icon">
+													<div
+														style={{ cursor: "pointer", marginBottom: "1rem" }}
+														onClick={() => getPdfFileHandler(item._id)}
+													>
+														<img
+															src={item.image}
+															alt={item.title}
+															className="br-7"
+														/>
+													</div>
+												</div>
+												<h6 className="mb-1 font-weight-semibold">
+													{item.title}
+												</h6>
+												<span>{item.size}</span>
+											</Card.Body>
+										</Card>
+									</Col>
+								))
+							) : (
+								<Col lg={12}>
+									<Card>
+										<p className="p-4 text-center text-primary">
+											No data available
+										</p>
 									</Card>
 								</Col>
-							))
-						) : (
-							<Col lg={12}>
-								<Card>
-									<p className="p-4">No data available</p>
-								</Card>
-							</Col>
-						)}
-					</Row>
+							)}
+						</Row>
+					)}
+
 					<ul className="pagination float-end mb-4">
 						<li className="page-item page-prev disabled">
 							<Link className="page-link" to="#" tabIndex="-1">

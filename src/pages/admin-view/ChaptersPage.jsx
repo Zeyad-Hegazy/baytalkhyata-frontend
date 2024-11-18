@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
-import { Button, Card, Col, Dropdown, Form, Modal, Row } from "react-bootstrap";
+import {
+	Button,
+	Card,
+	Col,
+	Dropdown,
+	Form,
+	Modal,
+	Row,
+	Spinner,
+} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { createChapter, getDiplomaChapters } from "../../api/admin/chapter";
@@ -9,13 +18,22 @@ const ChaptersPage = () => {
 	const { diplomaId } = useParams();
 	const [chapterTitle, setChapterTitle] = useState("");
 	const [showModal, setShowModal] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
+
 	const chapters = useSelector((state) => state.chapter);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const response = await getDiplomaChapters(diplomaId);
-			dispatch({ type: "GET_CHAPTERS", payload: response.data.result });
+			try {
+				setIsLoading(true);
+				const response = await getDiplomaChapters(diplomaId);
+				dispatch({ type: "GET_CHAPTERS", payload: response.data.result });
+			} catch (error) {
+				console.error("Error fetching chapter levels:", error);
+			} finally {
+				setIsLoading(false);
+			}
 		};
 		fetchData();
 	}, [dispatch, diplomaId]);
@@ -39,7 +57,12 @@ const ChaptersPage = () => {
 					<Button onClick={() => setShowModal(true)}>Add Chapter</Button>
 				</div>
 
-				{chapters?.length > 0 ? (
+				{isLoading ? (
+					<div className="text-center my-5">
+						<Spinner animation="border" variant="primary" />
+						<p className="mt-2">Loading...</p>
+					</div>
+				) : chapters?.length > 0 ? (
 					<Row className="row">
 						{chapters.map((chapter) => (
 							<Col sm={3} key={chapter._id}>

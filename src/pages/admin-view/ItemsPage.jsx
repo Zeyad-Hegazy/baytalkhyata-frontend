@@ -45,6 +45,7 @@ const ItemsPage = () => {
 		size: "",
 	});
 
+	const [isLoading, setIsLoading] = useState(true);
 	const [uploadProgress, setUploadProgress] = useState(0);
 	const [isUploading, setIsUploading] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,10 +55,13 @@ const ItemsPage = () => {
 	useEffect(() => {
 		const fetchLevels = async () => {
 			try {
+				setIsLoading(true);
 				const response = await getlevelSections(levelId);
 				setItems(response.data.result);
 			} catch (error) {
 				console.error("Error fetching chapter levels:", error);
+			} finally {
+				setIsLoading(false);
 			}
 		};
 		fetchLevels();
@@ -144,7 +148,12 @@ const ItemsPage = () => {
 					<Button onClick={() => setShowModal(true)}>Add Item</Button>
 				</div>
 
-				{items?.length > 0 ? (
+				{isLoading ? (
+					<div className="text-center my-5">
+						<Spinner animation="border" variant="primary" />
+						<p className="mt-2">Loading...</p>
+					</div>
+				) : items.length > 0 ? (
 					<Row className="row">
 						{items.map((item) => (
 							<Col sm={3} key={item._id}>
@@ -160,9 +169,8 @@ const ItemsPage = () => {
 										></div>
 									</Card.Header>
 									<Card.Body>
-										{" "}
 										<p>
-											<strong>The {item.type}:</strong>{" "}
+											<strong>The {item.type}:</strong>
 											<Button
 												className="ms-3"
 												onClick={async () => {

@@ -1,4 +1,4 @@
-import { Button, Card, Col, Modal, Row, Form } from "react-bootstrap";
+import { Button, Card, Col, Modal, Row, Form, Spinner } from "react-bootstrap";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
 import { useEffect, useState } from "react";
 
@@ -20,6 +20,9 @@ const Categories = () => {
 
 	const [selectedCategory, setSelectedCategory] = useState(null);
 
+	const [loadingCategories, setLoadingCategories] = useState(false);
+	const [loadingItems, setLoadingItems] = useState(false);
+
 	const [itemState, setItemState] = useState({
 		title: "",
 		price: "",
@@ -30,10 +33,17 @@ const Categories = () => {
 
 	useEffect(() => {
 		const fetchCategories = async () => {
-			const response = await getCategories();
-			dispatch({ type: "GET_CATEGORYIES", payload: response.data.result });
-			if (response.data.result.length > 0) {
-				setSelectedCategory(response.data.result[0]._id);
+			setLoadingCategories(true);
+			try {
+				const response = await getCategories();
+				dispatch({ type: "GET_CATEGORYIES", payload: response.data.result });
+				if (response.data.result.length > 0) {
+					setSelectedCategory(response.data.result[0]._id);
+				}
+			} catch (error) {
+				console.error("Error fetching categories:", error);
+			} finally {
+				setLoadingCategories(false);
 			}
 		};
 		fetchCategories();
@@ -42,9 +52,18 @@ const Categories = () => {
 	useEffect(() => {
 		const fetchItems = async () => {
 			if (selectedCategory) {
-				const response = await getCategoryItems(selectedCategory);
-				console.log(response);
-				dispatch({ type: "GET_CATEGORY_ITEMS", payload: response.data.result });
+				setLoadingItems(true);
+				try {
+					const response = await getCategoryItems(selectedCategory);
+					dispatch({
+						type: "GET_CATEGORY_ITEMS",
+						payload: response.data.result,
+					});
+				} catch (error) {
+					console.error("Error fetching category items:", error);
+				} finally {
+					setLoadingItems(false);
+				}
 			}
 		};
 		fetchItems();
@@ -99,36 +118,34 @@ const Categories = () => {
 
 				<Row>
 					<Col sm={12}>
-						<div>
-							{categories.length > 0 ? (
-								categories.map((category) => (
-									<Button
-										key={category._id}
-										variant={
-											selectedCategory === category._id
-												? "primary"
-												: "outline-primary"
-										}
-										style={{
-											width: "9rem",
-											marginRight: "1rem",
-										}}
-										onClick={() => setSelectedCategory(category._id)}
-										disabled={selectedCategory === category._id}
-									>
-										{category.title}
-									</Button>
-								))
-							) : (
-								<Card>
-									<Card.Body>
-										<p className="text-center text-primary">
-											No data available
-										</p>
-									</Card.Body>
-								</Card>
-							)}
-						</div>
+						{loadingCategories ? (
+							<div className="text-center my-5">
+								<Spinner animation="border" variant="primary" />
+								<p className="mt-2">Loading...</p>
+							</div>
+						) : categories.length > 0 ? (
+							categories.map((category) => (
+								<Button
+									key={category._id}
+									variant={
+										selectedCategory === category._id
+											? "primary"
+											: "outline-primary"
+									}
+									style={{ width: "9rem", marginRight: "1rem" }}
+									onClick={() => setSelectedCategory(category._id)}
+									disabled={selectedCategory === category._id}
+								>
+									{category.title}
+								</Button>
+							))
+						) : (
+							<Card>
+								<Card.Body>
+									<p className="text-center text-primary">No data available</p>
+								</Card.Body>
+							</Card>
+						)}
 					</Col>
 				</Row>
 
@@ -137,85 +154,43 @@ const Categories = () => {
 						Add Category Item
 					</Button>
 				</div>
+
 				<Row className="row">
-					{categoryItems.length > 0 ? (
+					{loadingItems ? (
+						<div className="text-center my-5">
+							<Spinner animation="border" variant="primary" />
+							<p className="mt-2">Loading...</p>
+						</div>
+					) : categoryItems.length > 0 ? (
 						categoryItems.map((item) => (
-							<Col xl={3} lg={6} md={4} className="alert" key={item.id}>
-								<Card className=" item-card ">
-									<Card.Body className="pb-0">
-										<div className="text-center zoom">
-											<div>
-												<img
-													className="w-100 br-5"
-													src={item.image}
-													alt={item.title}
-												/>
+							<Col xl={3} lg={6} md={4} key={item.id}>
+								<Card className="item-card">
+									<Card.Body>
+										<img
+											className="w-100 br-5"
+											src={item.image}
+											alt={item.title}
+										/>
+										<Row>
+											<div className="col-8">
+												<div className="cardtitle">
+													<div
+														className="shop-title fs-18"
+														style={{ fontSize: "2rem" }}
+													>
+														{item.title}
+													</div>
+												</div>
 											</div>
-										</div>
-										<Card.Body>
-											<Row>
-												<div className="col-8">
-													<div className="cardtitle">
-														<div
-															className="shop-title fs-18"
-															style={{ fontSize: "2rem" }}
-														>
-															{item.title}
-														</div>
-													</div>
+											<div className="col-4">
+												<div className="cardprice-2 d-flex mt-2">
+													<span className="text-primary">LE</span>{" "}
+													<span className="number-font"> {item.price}</span>
 												</div>
-												<div className="col-4">
-													<div className="cardprice-2 d-flex mt-2">
-														<span className="text-primary">LE</span>{" "}
-														<span className="number-font"> {item.price}</span>
-													</div>
-												</div>
-												<div></div>
-											</Row>
-										</Card.Body>
+											</div>
+											<div></div>
+										</Row>
 									</Card.Body>
-									{/* <Card.Footer className=" text-center">
-										<div className="text-center ">
-											<Button
-												variant=""
-												className="btn btn-md btn-primary mb-2  w-50 "
-												onClick={() => editItemClick(item)}
-											>
-												<i className="fe fe-shopping-cart me-2"></i> Edit Gift
-											</Button>
-											<Button
-												variant="light"
-												className="btn btn-md btn-light mb-2  w-50"
-												data-bs-dismiss="alert"
-												aria-label="Close"
-												onClick={() => {
-													setConfirmDeleteShow(true);
-													setDeleteItemId(item._id);
-												}}
-											>
-												<span className="me-2 fs-14">Remove</span>
-												<svg
-													xmlns="http://www.w3.org/2000/svg"
-													height="16px"
-													viewBox="0 0 24 24"
-													width="16px"
-													fill="#495057"
-												>
-													<path d="M0 0h24v24H0V0z" fill="none" />
-													<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
-												</svg>
-											</Button>
-											<Button
-												variant="light"
-												className="btn btn-md btn-light mb-2  w-100"
-												data-bs-dismiss="alert"
-												aria-label="Close"
-												onClick={() => handleAssignClick(item._id)}
-											>
-												<span className="me-2 fs-14">Assign To Student</span>
-											</Button>
-										</div>
-									</Card.Footer> */}
 								</Card>
 							</Col>
 						))
@@ -228,7 +203,6 @@ const Categories = () => {
 					)}
 				</Row>
 			</div>
-
 			<Modal
 				show={showModal}
 				onHide={() => {

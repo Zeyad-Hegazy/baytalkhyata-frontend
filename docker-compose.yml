@@ -9,7 +9,7 @@ services:
     ports:
       - "8091:80"
     environment:
-      - NODE_ENV=production # Or 'production'
+      - NODE_ENV=production
     networks:
       - byt-app-network
 

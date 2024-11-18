@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
-import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
+import { Button, Card, Col, Form, Modal, Row, Spinner } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { addLevelToChapter, getChapterLevels } from "../../api/admin/chapter";
 import { useDispatch } from "react-redux";
@@ -11,15 +11,19 @@ const LevelsPage = () => {
 	const [levels, setLevels] = useState([]);
 	const [levelTitle, setLevelTitle] = useState("");
 	const [levelOrder, setLevelOrder] = useState("");
+	const [isLoading, setIsLoading] = useState(true);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		const fetchLevels = async () => {
 			try {
+				setIsLoading(true);
 				const response = await getChapterLevels(chapterId);
 				setLevels(response.data.result.levels);
 			} catch (error) {
 				console.error("Error fetching chapter levels:", error);
+			} finally {
+				setIsLoading(false);
 			}
 		};
 		fetchLevels();
@@ -44,7 +48,12 @@ const LevelsPage = () => {
 					<Button onClick={() => setShowModal(true)}>Add Level</Button>
 				</div>
 
-				{levels?.length > 0 ? (
+				{isLoading ? (
+					<div className="text-center my-5">
+						<Spinner animation="border" variant="primary" />
+						<p className="mt-2">Loading...</p>
+					</div>
+				) : levels?.length > 0 ? (
 					<Row className="row">
 						{levels.map((level) => (
 							<Col sm={3} key={level._id}>

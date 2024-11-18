@@ -7,6 +7,7 @@ import {
 	Form,
 	Dropdown,
 	Collapse,
+	Spinner,
 } from "react-bootstrap";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,11 +31,19 @@ const formatDate = (isoDate) => {
 
 const Diplomas = () => {
 	const dispatch = useDispatch();
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const response = await getDiplomas();
-			dispatch({ type: "GET_DIPLOMAS", payload: response.data.result });
+			try {
+				setIsLoading(true);
+				const response = await getDiplomas();
+				dispatch({ type: "GET_DIPLOMAS", payload: response.data.result });
+			} catch (error) {
+				console.error("Error fetching chapter levels:", error);
+			} finally {
+				setIsLoading(false);
+			}
 		};
 		fetchData();
 	}, [dispatch]);
@@ -153,7 +162,12 @@ const Diplomas = () => {
 					<Button onClick={() => setShowModal(true)}>Add Diploma</Button>
 				</div>
 
-				{diplomas?.length > 0 ? (
+				{isLoading ? (
+					<div className="text-center my-5">
+						<Spinner animation="border" variant="primary" />
+						<p className="mt-2">Loading...</p>
+					</div>
+				) : diplomas?.length > 0 ? (
 					<Row className="row">
 						{diplomas.map((diploma) => (
 							<Col sm={3} key={diploma._id}>

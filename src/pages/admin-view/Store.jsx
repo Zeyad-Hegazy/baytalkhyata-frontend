@@ -10,6 +10,7 @@ import {
 	Button,
 	Modal,
 	Form,
+	Spinner,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,14 +38,21 @@ const Store = () => {
 	const [deleteItemId, setDeleteItemId] = useState(null);
 	const [isEdit, setIsEdit] = useState(false);
 	const [editItemId, setEditItemId] = useState(null);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const dispatch = useDispatch();
 	const gifts = useSelector((state) => state.gifts);
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const response = await getGifts();
-			dispatch({ type: "GET_GIFTS", payload: response.data.result });
+			try {
+				const response = await getGifts();
+				dispatch({ type: "GET_GIFTS", payload: response.data.result });
+			} catch (error) {
+				console.error("Error fetching chapter levels:", error);
+			} finally {
+				setIsLoading(false);
+			}
 		};
 		fetchData();
 
@@ -141,27 +149,33 @@ const Store = () => {
 				>
 					Add New Gift
 				</Button>
-				<Row className="row">
-					{gifts.length > 0 ? (
-						gifts.map((item) => (
-							<Col xl={3} lg={6} md={4} className="alert" key={item.id}>
-								<Card className=" item-card ">
-									<Card.Body className="pb-0">
-										<div className="text-center zoom">
-											<div>
-												<img
-													className="w-100 br-5"
-													src={item.image}
-													alt={item.title}
-												/>
+				{isLoading ? (
+					<div className="text-center my-5">
+						<Spinner animation="border" variant="primary" />
+						<p className="mt-2">Loading...</p>
+					</div>
+				) : (
+					<Row className="row">
+						{gifts.length > 0 ? (
+							gifts.map((item) => (
+								<Col xl={3} lg={6} md={4} className="alert" key={item.id}>
+									<Card className=" item-card ">
+										<Card.Body className="pb-0">
+											<div className="text-center zoom">
+												<div>
+													<img
+														className="w-100 br-5"
+														src={item.image}
+														alt={item.title}
+													/>
+												</div>
 											</div>
-										</div>
-										<Card.Body className=" px-0 pb-3">
-											<Row>
-												<div className="col-8">
-													<div className="cardtitle">
-														<div>
-															{/* <Link to="#">
+											<Card.Body className=" px-0 pb-3">
+												<Row>
+													<div className="col-8">
+														<div className="cardtitle">
+															<div>
+																{/* <Link to="#">
                               <i className="fa fa-star text-warning fs-16"></i>
                             </Link>
                             <Link to="#">
@@ -170,89 +184,92 @@ const Store = () => {
                             <Link to="#">
                               <i className="fa fa-star text-warning fs-16"></i>
                             </Link> */}
-															{/* <Link to="#">
+																{/* <Link to="#">
                               <i className="fa fa-star-half text-warning fs-16"></i>
                             </Link> */}
-															{/* <Link to="#">
+																{/* <Link to="#">
                               <i className="fa fa-star-o text-warning fs-16"></i>
                             </Link> */}
-															{/* <Link to="#"> {item.num}</Link> */}
-														</div>
-														<div
-															className="shop-title fs-18"
-															style={{ fontSize: "2rem" }}
-														>
-															{item.title}
+																{/* <Link to="#"> {item.num}</Link> */}
+															</div>
+															<div
+																className="shop-title fs-18"
+																style={{ fontSize: "2rem" }}
+															>
+																{item.title}
+															</div>
 														</div>
 													</div>
-												</div>
-												<div className="col-4">
-													<div className="cardprice-2">
-														<i className="fa fa-star text-warning fs-16"></i>
-														<span className="number-font">{item.points}</span>
+													<div className="col-4">
+														<div className="cardprice-2">
+															<i className="fa fa-star text-warning fs-16"></i>
+															<span className="number-font">{item.points}</span>
+														</div>
 													</div>
-												</div>
-												<div>
-													{/* <p className="shop-description fs-13 text-muted mt-2 mb-0">
+													<div>
+														{/* <p className="shop-description fs-13 text-muted mt-2 mb-0">
                           {item.text}
                         </p> */}
-												</div>
-											</Row>
+													</div>
+												</Row>
+											</Card.Body>
 										</Card.Body>
-									</Card.Body>
-									<Card.Footer className=" text-center">
-										<div className="text-center ">
-											<Button
-												variant=""
-												className="btn btn-md btn-primary mb-2  w-50 "
-												onClick={() => editItemClick(item)}
-											>
-												<i className="fe fe-shopping-cart me-2"></i> Edit Gift
-											</Button>
-											<Button
-												variant="light"
-												className="btn btn-md btn-light mb-2  w-50"
-												data-bs-dismiss="alert"
-												aria-label="Close"
-												onClick={() => {
-													setConfirmDeleteShow(true);
-													setDeleteItemId(item._id);
-												}}
-											>
-												<span className="me-2 fs-14">Remove</span>
-												<svg
-													xmlns="http://www.w3.org/2000/svg"
-													height="16px"
-													viewBox="0 0 24 24"
-													width="16px"
-													fill="#495057"
+										<Card.Footer className=" text-center">
+											<div className="text-center ">
+												<Button
+													variant=""
+													className="btn btn-md btn-primary mb-2  w-50 "
+													onClick={() => editItemClick(item)}
 												>
-													<path d="M0 0h24v24H0V0z" fill="none" />
-													<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
-												</svg>
-											</Button>
-											<Button
-												variant="light"
-												className="btn btn-md btn-light mb-2  w-100"
-												data-bs-dismiss="alert"
-												aria-label="Close"
-												onClick={() => handleAssignClick(item._id)}
-											>
-												<span className="me-2 fs-14">Assign To Student</span>
-											</Button>
-										</div>
-									</Card.Footer>
+													<i className="fe fe-shopping-cart me-2"></i> Edit Gift
+												</Button>
+												<Button
+													variant="light"
+													className="btn btn-md btn-light mb-2  w-50"
+													data-bs-dismiss="alert"
+													aria-label="Close"
+													onClick={() => {
+														setConfirmDeleteShow(true);
+														setDeleteItemId(item._id);
+													}}
+												>
+													<span className="me-2 fs-14">Remove</span>
+													<svg
+														xmlns="http://www.w3.org/2000/svg"
+														height="16px"
+														viewBox="0 0 24 24"
+														width="16px"
+														fill="#495057"
+													>
+														<path d="M0 0h24v24H0V0z" fill="none" />
+														<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+													</svg>
+												</Button>
+												<Button
+													variant="light"
+													className="btn btn-md btn-light mb-2  w-100"
+													data-bs-dismiss="alert"
+													aria-label="Close"
+													onClick={() => handleAssignClick(item._id)}
+												>
+													<span className="me-2 fs-14">Assign To Student</span>
+												</Button>
+											</div>
+										</Card.Footer>
+									</Card>
+								</Col>
+							))
+						) : (
+							<Col lg={12}>
+								<Card>
+									<p className="p-4 text-center text-primary">
+										No data available
+									</p>
 								</Card>
 							</Col>
-						))
-					) : (
-						<Col lg={12}>
-							<Card>
-								<p className="p-4">No data available</p>
-							</Card>
-						</Col>
-					)}
-				</Row>
+						)}
+					</Row>
+				)}
 
 				<div className="d-flex justify-content-end">
 					<Pagination className="pagination mb-5">

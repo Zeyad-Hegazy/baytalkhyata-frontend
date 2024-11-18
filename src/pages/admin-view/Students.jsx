@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Fragment, useCallback, useEffect, useState } from "react";
-import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
+import { Button, Card, Col, Form, Modal, Row, Spinner } from "react-bootstrap";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
 import { StudentTable } from "../../components/table/Savetable";
 import { getStudents, createStudent } from "../../api/admin/students";
@@ -12,6 +12,8 @@ const Students = () => {
 
 	const [showModal, setShowModal] = useState(false);
 
+	const [isLoading, setIsLoading] = useState(false);
+
 	const [addFormData, setAddFormData] = useState({
 		fullName: "",
 		Password: "",
@@ -20,10 +22,16 @@ const Students = () => {
 	});
 
 	const getAll = useCallback(async () => {
-		const response = await getStudents();
-		dispatch({ type: "GET_STUDENTS", payload: response.data.result });
+		try {
+			setIsLoading(true);
+			const response = await getStudents();
+			dispatch({ type: "GET_STUDENTS", payload: response.data.result });
+		} catch (error) {
+			console.error("Failed to fetch students:", error);
+		} finally {
+			setIsLoading(false);
+		}
 	}, [dispatch]);
-
 	useEffect(() => {
 		const fetchData = async () => {
 			await getAll();
@@ -71,8 +79,15 @@ const Students = () => {
 							<Col lg={12}>
 								<Card className="custom-card">
 									<Card.Body>
-										<div className="table-responsive  deleted-table">
-											{students.length > 0 ? (
+										<div className="table-responsive deleted-table">
+											{isLoading ? (
+												<div className="d-flex justify-content-center align-items-center">
+													<div className="text-center my-5">
+														<Spinner animation="border" variant="primary" />
+														<p className="mt-2">Loading...</p>
+													</div>
+												</div>
+											) : students.length > 0 ? (
 												<StudentTable getAll={getAll} contacts={students} />
 											) : (
 												<p>No data available</p>
@@ -160,9 +175,5 @@ const Students = () => {
 		</Fragment>
 	);
 };
-
-Students.propTypes = {};
-
-Students.defaultProps = {};
 
 export default Students;

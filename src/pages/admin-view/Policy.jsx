@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, Container, Form, Row, Col } from "react-bootstrap";
+import {
+	Button,
+	Card,
+	Container,
+	Form,
+	Row,
+	Col,
+	Spinner,
+} from "react-bootstrap";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 import Pageheader from "../../layout/layoutcomponent/pageheader";
@@ -16,11 +24,19 @@ const Policy = () => {
 
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const response = await getPolicies();
-			dispatch({ type: "GET_POLICIES", payload: response.data.result });
+			try {
+				setIsLoading(true);
+				const response = await getPolicies();
+				dispatch({ type: "GET_POLICIES", payload: response.data.result });
+			} catch (error) {
+				console.error("Error fetching chapter levels:", error);
+			} finally {
+				setIsLoading(false);
+			}
 		};
 		fetchData();
 	}, [dispatch]);
@@ -85,24 +101,39 @@ const Policy = () => {
 				</Col>
 			</Row>
 
-			<Row>
-				{policies.map((policy) => (
-					<Col md={4} key={policy._id} className="mb-4">
-						<Card className="position-relative">
+			{isLoading ? (
+				<div className="text-center my-5">
+					<Spinner animation="border" variant="primary" />
+					<p className="mt-2">Loading...</p>
+				</div>
+			) : (
+				<Row>
+					{policies.length > 0 ? (
+						policies.map((policy) => (
+							<Col md={4} key={policy._id} className="mb-4">
+								<Card className="position-relative">
+									<Card.Body>
+										<DeleteForeverIcon
+											className="text-danger position-absolute"
+											style={{ top: "10px", right: "10px", cursor: "pointer" }}
+											onClick={() => handleDelete(policy._id)}
+											size={24}
+										/>
+										<Card.Title>{policy.title}</Card.Title>
+										<Card.Text>{policy.content}</Card.Text>
+									</Card.Body>
+								</Card>
+							</Col>
+						))
+					) : (
+						<Card>
 							<Card.Body>
-								<DeleteForeverIcon
-									className="text-danger position-absolute"
-									style={{ top: "10px", right: "10px", cursor: "pointer" }}
-									onClick={() => handleDelete(policy._id)}
-									size={24}
-								/>
-								<Card.Title>{policy.title}</Card.Title>
-								<Card.Text>{policy.content}</Card.Text>
+								<p className="text-center text-primary">No data available</p>
 							</Card.Body>
 						</Card>
-					</Col>
-				))}
-			</Row>
+					)}
+				</Row>
+			)}
 		</Container>
 	);
 };
