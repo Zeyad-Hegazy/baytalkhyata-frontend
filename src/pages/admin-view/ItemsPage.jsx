@@ -2,6 +2,7 @@ import {
 	Button,
 	Card,
 	Col,
+	Dropdown,
 	Form,
 	Modal,
 	ProgressBar,
@@ -9,12 +10,13 @@ import {
 	Spinner,
 } from "react-bootstrap";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
 	addItemToLevel,
 	getlevelSections,
 	getSectionItem,
+	deleteLevelItem,
 } from "../../api/admin/chapter";
 import Dropzone from "react-dropzone";
 import { useDispatch } from "react-redux";
@@ -52,20 +54,21 @@ const ItemsPage = () => {
 
 	const dispatch = useDispatch();
 
-	useEffect(() => {
-		const fetchLevels = async () => {
-			try {
-				setIsLoading(true);
-				const response = await getlevelSections(levelId);
-				setItems(response.data.result);
-			} catch (error) {
-				console.error("Error fetching chapter levels:", error);
-			} finally {
-				setIsLoading(false);
-			}
-		};
-		fetchLevels();
+	const fetchItems = useCallback(async () => {
+		try {
+			setIsLoading(true);
+			const response = await getlevelSections(levelId);
+			setItems(response.data.result);
+		} catch (error) {
+			console.error("Error fetching chapter levels:", error);
+		} finally {
+			setIsLoading(false);
+		}
 	}, [levelId]);
+
+	useEffect(() => {
+		fetchItems();
+	}, [fetchItems]);
 
 	const handleFileUpload = (acceptedFiles) => {
 		if (acceptedFiles && acceptedFiles.length > 0) {
@@ -139,6 +142,19 @@ const ItemsPage = () => {
 		}
 	};
 
+	const deleteItemHandler = async (id) => {
+		try {
+			const response = await deleteLevelItem(id);
+			dispatch({
+				type: "open",
+				payload: { message: response.data.message },
+			});
+			await fetchItems();
+		} catch (error) {
+			console.error("Deleting failed", error);
+		}
+	};
+
 	return (
 		<>
 			<div className="m-4 position-relative">
@@ -166,7 +182,29 @@ const ItemsPage = () => {
 										<div
 											className="d-flex align-items-center px-3 pt-3"
 											style={{ position: "absolute", top: "-10px", right: "0" }}
-										></div>
+										>
+											<Dropdown className="float-end optiondots ms-auto">
+												<Dropdown.Toggle variant="" className="option-dots">
+													<i className="fe fe-more-vertical"></i>
+												</Dropdown.Toggle>
+												<Dropdown.Menu>
+													{/* <Dropdown.Item
+														href="#"
+														className="d-inline-flex align-items-center"
+														onClick={() => editItemHandler(diploma)}
+													>
+														<i className="fe fe-edit me-2"></i> Edit
+													</Dropdown.Item> */}
+													<Dropdown.Item
+														href="#"
+														className="d-inline-flex align-items-center"
+														onClick={() => deleteItemHandler(item._id)}
+													>
+														<i className="fe fe-trash me-2"></i> Delete
+													</Dropdown.Item>
+												</Dropdown.Menu>
+											</Dropdown>
+										</div>
 									</Card.Header>
 									<Card.Body>
 										<p>

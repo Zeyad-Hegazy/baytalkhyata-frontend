@@ -7,6 +7,13 @@ export const addLevelToChapter = (id, formData) =>
 export const addItemToLevel = (id, formData) =>
 	API.patch("/admin/chapter/level/item/" + id, formData);
 
+export const deleteLevelItem = (id) =>
+	API.delete("/admin/chapter/level/item/" + id);
+
+export const deleteLevel = (id) => API.delete("/admin/chapter/level/" + id);
+
+export const deleteChapter = (id) => API.delete("/admin/chapter/" + id);
+
 export const createQuiz = (formData) =>
 	API.patch("/admin/chapter/quiz", formData);
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
 import {
 	Button,
@@ -12,7 +12,11 @@ import {
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { createChapter, getDiplomaChapters } from "../../api/admin/chapter";
+import {
+	createChapter,
+	deleteChapter,
+	getDiplomaChapters,
+} from "../../api/admin/chapter";
 
 const ChaptersPage = () => {
 	const { diplomaId } = useParams();
@@ -23,20 +27,21 @@ const ChaptersPage = () => {
 	const chapters = useSelector((state) => state.chapter);
 	const dispatch = useDispatch();
 
+	const fetchData = useCallback(async () => {
+		try {
+			setIsLoading(true);
+			const response = await getDiplomaChapters(diplomaId);
+			dispatch({ type: "GET_CHAPTERS", payload: response.data.result });
+		} catch (error) {
+			console.error("Error fetching chapter levels:", error);
+		} finally {
+			setIsLoading(false);
+		}
+	}, [diplomaId, dispatch]);
+
 	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				setIsLoading(true);
-				const response = await getDiplomaChapters(diplomaId);
-				dispatch({ type: "GET_CHAPTERS", payload: response.data.result });
-			} catch (error) {
-				console.error("Error fetching chapter levels:", error);
-			} finally {
-				setIsLoading(false);
-			}
-		};
 		fetchData();
-	}, [dispatch, diplomaId]);
+	}, [fetchData]);
 
 	const handleSaveChapter = async () => {
 		const response = await createChapter({
@@ -48,6 +53,18 @@ const ChaptersPage = () => {
 		dispatch({ type: "open", payload: { message: response.data.message } });
 	};
 
+	const deleteChapterHandler = async (id) => {
+		try {
+			const response = await deleteChapter(id);
+			dispatch({
+				type: "open",
+				payload: { message: response.data.message },
+			});
+			await fetchData();
+		} catch (error) {
+			console.error("Deleting failed", error);
+		}
+	};
 	return (
 		<>
 			<div className="m-4 position-relative">
@@ -76,37 +93,27 @@ const ChaptersPage = () => {
 											className="d-flex align-items-center px-3 pt-3"
 											style={{ position: "absolute", top: "-10px", right: "0" }}
 										>
-											{/* <Dropdown className="float-end optiondots ms-auto">
-											<Dropdown.Toggle variant="" className="option-dots">
-												<i className="fe fe-more-vertical"></i>
-											</Dropdown.Toggle>
-											<Dropdown.Menu>
-												<Dropdown.Item
-													href="#"
-													className="d-inline-flex align-items-center"
-													onClick={() => handleAssignClick(chapter._id)}
-												>
-													<i className="fa fa-gift me-2"></i> Assign to Student
-												</Dropdown.Item>
-												<Dropdown.Item
-													href="#"
-													className="d-inline-flex align-items-center"
-													onClick={() => editItemHandler(chapter)}
-												>
-													<i className="fe fe-edit me-2"></i> Edit
-												</Dropdown.Item>
-												<Dropdown.Item
-													href="#"
-													className="d-inline-flex align-items-center"
-													onClick={() => {
-														setConfirmDeleteShow(true);
-														setDeleteItemId(chapter._id);
-													}}
-												>
-													<i className="fe fe-trash me-2"></i> Delete
-												</Dropdown.Item>
-											</Dropdown.Menu>
-										</Dropdown> */}
+											<Dropdown className="float-end optiondots ms-auto">
+												<Dropdown.Toggle variant="" className="option-dots">
+													<i className="fe fe-more-vertical"></i>
+												</Dropdown.Toggle>
+												<Dropdown.Menu>
+													{/* <Dropdown.Item
+														href="#"
+														className="d-inline-flex align-items-center"
+														onClick={() => editItemHandler(diploma)}
+													>
+														<i className="fe fe-edit me-2"></i> Edit
+													</Dropdown.Item> */}
+													<Dropdown.Item
+														href="#"
+														className="d-inline-flex align-items-center"
+														onClick={() => deleteChapterHandler(chapter._id)}
+													>
+														<i className="fe fe-trash me-2"></i> Delete
+													</Dropdown.Item>
+												</Dropdown.Menu>
+											</Dropdown>
 										</div>
 									</Card.Header>
 

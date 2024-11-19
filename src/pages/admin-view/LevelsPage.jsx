@@ -1,8 +1,21 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Pageheader from "../../layout/layoutcomponent/pageheader";
-import { Button, Card, Col, Form, Modal, Row, Spinner } from "react-bootstrap";
+import {
+	Button,
+	Card,
+	Col,
+	Dropdown,
+	Form,
+	Modal,
+	Row,
+	Spinner,
+} from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import { addLevelToChapter, getChapterLevels } from "../../api/admin/chapter";
+import {
+	addLevelToChapter,
+	deleteLevel,
+	getChapterLevels,
+} from "../../api/admin/chapter";
 import { useDispatch } from "react-redux";
 
 const LevelsPage = () => {
@@ -14,20 +27,21 @@ const LevelsPage = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const dispatch = useDispatch();
 
-	useEffect(() => {
-		const fetchLevels = async () => {
-			try {
-				setIsLoading(true);
-				const response = await getChapterLevels(chapterId);
-				setLevels(response.data.result.levels);
-			} catch (error) {
-				console.error("Error fetching chapter levels:", error);
-			} finally {
-				setIsLoading(false);
-			}
-		};
-		fetchLevels();
+	const fetchLevels = useCallback(async () => {
+		try {
+			setIsLoading(true);
+			const response = await getChapterLevels(chapterId);
+			setLevels(response.data.result.levels);
+		} catch (error) {
+			console.error("Error fetching chapter levels:", error);
+		} finally {
+			setIsLoading(false);
+		}
 	}, [chapterId]);
+
+	useEffect(() => {
+		fetchLevels();
+	}, [fetchLevels]);
 
 	const handleSaveLevel = async () => {
 		const response = await addLevelToChapter(chapterId, {
@@ -37,6 +51,19 @@ const LevelsPage = () => {
 		setShowModal(false);
 		setLevels((prevState) => [...prevState, response.data.result]);
 		dispatch({ type: "open", payload: { message: response.data.message } });
+	};
+
+	const deleteLevelHandler = async (id) => {
+		try {
+			const response = await deleteLevel(id);
+			dispatch({
+				type: "open",
+				payload: { message: response.data.message },
+			});
+			await fetchLevels();
+		} catch (error) {
+			console.error("Deleting failed", error);
+		}
 	};
 
 	return (
@@ -66,7 +93,29 @@ const LevelsPage = () => {
 										<div
 											className="d-flex align-items-center px-3 pt-3"
 											style={{ position: "absolute", top: "-10px", right: "0" }}
-										></div>
+										>
+											<Dropdown className="float-end optiondots ms-auto">
+												<Dropdown.Toggle variant="" className="option-dots">
+													<i className="fe fe-more-vertical"></i>
+												</Dropdown.Toggle>
+												<Dropdown.Menu>
+													{/* <Dropdown.Item
+														href="#"
+														className="d-inline-flex align-items-center"
+														onClick={() => editItemHandler(diploma)}
+													>
+														<i className="fe fe-edit me-2"></i> Edit
+													</Dropdown.Item> */}
+													<Dropdown.Item
+														href="#"
+														className="d-inline-flex align-items-center"
+														onClick={() => deleteLevelHandler(level._id)}
+													>
+														<i className="fe fe-trash me-2"></i> Delete
+													</Dropdown.Item>
+												</Dropdown.Menu>
+											</Dropdown>
+										</div>
 									</Card.Header>
 
 									<div className="m-4">
