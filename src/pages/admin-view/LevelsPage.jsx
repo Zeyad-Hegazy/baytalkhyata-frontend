@@ -15,6 +15,7 @@ import {
 	addLevelToChapter,
 	deleteLevel,
 	getChapterLevels,
+	updateLevel,
 } from "../../api/admin/chapter";
 import { useDispatch } from "react-redux";
 
@@ -25,7 +26,18 @@ const LevelsPage = () => {
 	const [levelTitle, setLevelTitle] = useState("");
 	const [levelOrder, setLevelOrder] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
+	const [isEdit, setIsEdit] = useState(false);
+	const [editItemId, setEditItemId] = useState(null);
+
 	const dispatch = useDispatch();
+
+	const editLevelHandler = (level) => {
+		setEditItemId(level._id);
+		setLevelTitle(level.title);
+		setLevelOrder(level.order);
+		setIsEdit(true);
+		setShowModal(true);
+	};
 
 	const fetchLevels = useCallback(async () => {
 		try {
@@ -43,14 +55,26 @@ const LevelsPage = () => {
 		fetchLevels();
 	}, [fetchLevels]);
 
-	const handleSaveLevel = async () => {
-		const response = await addLevelToChapter(chapterId, {
-			title: levelTitle,
-			order: +levelOrder,
-		});
-		setShowModal(false);
-		setLevels((prevState) => [...prevState, response.data.result]);
-		dispatch({ type: "open", payload: { message: response.data.message } });
+	const handleSaveLevel = async (e) => {
+		e?.preventDefault();
+
+		if (isEdit) {
+			const response = await updateLevel(editItemId, {
+				title: levelTitle,
+				order: +levelOrder,
+			});
+			await fetchLevels();
+			setShowModal(false);
+			dispatch({ type: "open", payload: { message: response.data.message } });
+		} else {
+			const response = await addLevelToChapter(chapterId, {
+				title: levelTitle,
+				order: +levelOrder,
+			});
+			setShowModal(false);
+			setLevels((prevState) => [...prevState, response.data.result]);
+			dispatch({ type: "open", payload: { message: response.data.message } });
+		}
 	};
 
 	const deleteLevelHandler = async (id) => {
@@ -72,7 +96,16 @@ const LevelsPage = () => {
 				<Pageheader title="Levels" heading="Main Menu" active="Levels" />
 
 				<div className="mb-4">
-					<Button onClick={() => setShowModal(true)}>Add Level</Button>
+					<Button
+						onClick={() => {
+							setIsEdit(false);
+							setShowModal(true);
+							setLevelTitle("");
+							setLevelOrder("");
+						}}
+					>
+						Add Level
+					</Button>
 				</div>
 
 				{isLoading ? (
@@ -99,13 +132,13 @@ const LevelsPage = () => {
 													<i className="fe fe-more-vertical"></i>
 												</Dropdown.Toggle>
 												<Dropdown.Menu>
-													{/* <Dropdown.Item
+													<Dropdown.Item
 														href="#"
 														className="d-inline-flex align-items-center"
-														onClick={() => editItemHandler(diploma)}
+														onClick={() => editLevelHandler(level)}
 													>
 														<i className="fe fe-edit me-2"></i> Edit
-													</Dropdown.Item> */}
+													</Dropdown.Item>
 													<Dropdown.Item
 														href="#"
 														className="d-inline-flex align-items-center"
@@ -144,7 +177,7 @@ const LevelsPage = () => {
 				}}
 			>
 				<Modal.Header closeButton>
-					<Modal.Title>{"Add New Level"}</Modal.Title>
+					<Modal.Title>{isEdit ? "Edit Level" : "Add New Level"}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<Form onSubmit={handleSaveLevel}>
@@ -182,7 +215,7 @@ const LevelsPage = () => {
 						Close
 					</Button>
 					<Button variant="primary" onClick={handleSaveLevel}>
-						{"Add Level"}
+						{isEdit ? "Edit Level" : "Add Level"}
 					</Button>
 				</Modal.Footer>
 			</Modal>{" "}

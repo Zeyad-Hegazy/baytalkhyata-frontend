@@ -159,7 +159,22 @@ const Diplomas = () => {
 				<Pageheader title="Diplomas" heading="Main Menu" active="Diplomas" />
 
 				<div className="mb-4">
-					<Button onClick={() => setShowModal(true)}>Add Diploma</Button>
+					<Button
+						onClick={() => {
+							setIsEdit(false);
+							setShowModal(true);
+							setFormState({
+								title: "",
+								description: "",
+								totalPoints: 0,
+								price: 0,
+								totalHours: 0,
+								expiresIn: "",
+							});
+						}}
+					>
+						Add Diploma
+					</Button>
 				</div>
 
 				{isLoading ? (

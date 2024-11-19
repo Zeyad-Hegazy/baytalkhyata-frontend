@@ -60,7 +60,7 @@ const ChaptersPage = () => {
 		if (isEdit) {
 			const response = await updateChapter(editItemId, { title: chapterTitle });
 			dispatch({ type: "open", payload: { message: response.data.message } });
-			fetchData();
+			await fetchData();
 			setShowModal(false);
 		} else {
 			const response = await createChapter({
@@ -92,7 +92,15 @@ const ChaptersPage = () => {
 				<Pageheader title="Chapters" heading="Main Menu" active="Chapters" />
 
 				<div className="mb-4">
-					<Button onClick={() => setShowModal(true)}>Add Chapter</Button>
+					<Button
+						onClick={() => {
+							setIsEdit(false);
+							setShowModal(true);
+							setChapterTitle("");
+						}}
+					>
+						Add Chapter
+					</Button>
 				</div>
 
 				{isLoading ? (
