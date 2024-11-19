@@ -16,6 +16,7 @@ import {
 	createChapter,
 	deleteChapter,
 	getDiplomaChapters,
+	updateChapter,
 } from "../../api/admin/chapter";
 
 const ChaptersPage = () => {
@@ -24,8 +25,18 @@ const ChaptersPage = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 
+	const [isEdit, setIsEdit] = useState(false);
+	const [editItemId, setEditItemId] = useState(null);
+
 	const chapters = useSelector((state) => state.chapter);
 	const dispatch = useDispatch();
+
+	const editChapterHandler = (chapter) => {
+		setEditItemId(chapter._id);
+		setChapterTitle(chapter.title);
+		setIsEdit(true);
+		setShowModal(true);
+	};
 
 	const fetchData = useCallback(async () => {
 		try {
@@ -43,14 +54,23 @@ const ChaptersPage = () => {
 		fetchData();
 	}, [fetchData]);
 
-	const handleSaveChapter = async () => {
-		const response = await createChapter({
-			title: chapterTitle,
-			diploma: diplomaId,
-		});
-		dispatch({ type: "ADD_CHAPTER", payload: response.data.result });
-		setShowModal(false);
-		dispatch({ type: "open", payload: { message: response.data.message } });
+	const handleSaveChapter = async (e) => {
+		e?.preventDefault();
+
+		if (isEdit) {
+			const response = await updateChapter(editItemId, { title: chapterTitle });
+			dispatch({ type: "open", payload: { message: response.data.message } });
+			fetchData();
+			setShowModal(false);
+		} else {
+			const response = await createChapter({
+				title: chapterTitle,
+				diploma: diplomaId,
+			});
+			dispatch({ type: "ADD_CHAPTER", payload: response.data.result });
+			setShowModal(false);
+			dispatch({ type: "open", payload: { message: response.data.message } });
+		}
 	};
 
 	const deleteChapterHandler = async (id) => {
@@ -65,6 +85,7 @@ const ChaptersPage = () => {
 			console.error("Deleting failed", error);
 		}
 	};
+
 	return (
 		<>
 			<div className="m-4 position-relative">
@@ -98,13 +119,13 @@ const ChaptersPage = () => {
 													<i className="fe fe-more-vertical"></i>
 												</Dropdown.Toggle>
 												<Dropdown.Menu>
-													{/* <Dropdown.Item
+													<Dropdown.Item
 														href="#"
 														className="d-inline-flex align-items-center"
-														onClick={() => editItemHandler(diploma)}
+														onClick={() => editChapterHandler(chapter)}
 													>
 														<i className="fe fe-edit me-2"></i> Edit
-													</Dropdown.Item> */}
+													</Dropdown.Item>
 													<Dropdown.Item
 														href="#"
 														className="d-inline-flex align-items-center"
@@ -142,7 +163,9 @@ const ChaptersPage = () => {
 				}}
 			>
 				<Modal.Header closeButton>
-					<Modal.Title>{"Add New Chapter"}</Modal.Title>
+					<Modal.Title>
+						{isEdit ? "Edit Chapter Title" : "Add New Chapter"}
+					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<Form onSubmit={handleSaveChapter}>
@@ -169,7 +192,7 @@ const ChaptersPage = () => {
 						Close
 					</Button>
 					<Button variant="primary" onClick={handleSaveChapter}>
-						{"Add Chapter"}
+						{isEdit ? "Edit Chapter" : "Add Chapter"}
 					</Button>
 				</Modal.Footer>
 			</Modal>{" "}

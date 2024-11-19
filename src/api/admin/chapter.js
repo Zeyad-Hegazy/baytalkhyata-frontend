@@ -14,6 +14,9 @@ export const deleteLevel = (id) => API.delete("/admin/chapter/level/" + id);
 
 export const deleteChapter = (id) => API.delete("/admin/chapter/" + id);
 
+export const updateChapter = (id, formData) =>
+	API.patch("/admin/chapter/update/" + id, formData);
+
 export const createQuiz = (formData) =>
 	API.patch("/admin/chapter/quiz", formData);
 
