@@ -20,6 +20,9 @@ export const updateChapter = (id, formData) =>
 export const updateLevel = (id, formData) =>
 	API.patch("/admin/chapter/level/" + id, formData);
 
+export const updateLevelItem = (id, formData) =>
+	API.patch("/admin/chapter/level/item/update/" + id, formData);
+
 export const createQuiz = (formData) =>
 	API.patch("/admin/chapter/quiz", formData);
 

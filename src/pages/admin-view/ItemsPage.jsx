@@ -17,6 +17,7 @@ import {
 	getlevelSections,
 	getSectionItem,
 	deleteLevelItem,
+	updateLevelItem,
 } from "../../api/admin/chapter";
 import Dropzone from "react-dropzone";
 import { useDispatch } from "react-redux";
@@ -47,6 +48,9 @@ const ItemsPage = () => {
 		size: "",
 	});
 
+	const [isEdit, setIsEdit] = useState(false);
+	const [editItemId, setEditItemId] = useState(null);
+
 	const [isLoading, setIsLoading] = useState(true);
 	const [uploadProgress, setUploadProgress] = useState(0);
 	const [isUploading, setIsUploading] = useState(false);
@@ -69,6 +73,19 @@ const ItemsPage = () => {
 	useEffect(() => {
 		fetchItems();
 	}, [fetchItems]);
+
+	const editItemHandler = (item) => {
+		setEditItemId(item._id);
+		setItem({
+			title: item.title,
+			type: item.type,
+			fileBuffer: "",
+			description: item.description,
+			points: item.points,
+		});
+		setIsEdit(true);
+		setShowModal(true);
+	};
 
 	const handleFileUpload = (acceptedFiles) => {
 		if (acceptedFiles && acceptedFiles.length > 0) {
@@ -117,15 +134,26 @@ const ItemsPage = () => {
 		}
 	};
 
-	const addItemToSection = async () => {
+	const addItemToSection = async (e) => {
+		e?.preventDefault();
+
 		try {
 			setIsSubmitting(true);
-			const response = await addItemToLevel(levelId, { item });
-			dispatch({
-				type: "open",
-				payload: { message: response.data.message },
-			});
-			setItems((prevState) => [...prevState, response.data.result]);
+			if (isEdit) {
+				const response = await updateLevelItem(editItemId, { ...item });
+				dispatch({
+					type: "open",
+					payload: { message: response.data.message },
+				});
+				fetchItems();
+			} else {
+				const response = await addItemToLevel(levelId, { item });
+				dispatch({
+					type: "open",
+					payload: { message: response.data.message },
+				});
+				setItems((prevState) => [...prevState, response.data.result]);
+			}
 		} catch (error) {
 			console.error("Submission failed", error);
 		} finally {
@@ -161,7 +189,22 @@ const ItemsPage = () => {
 				<Pageheader title="Items" heading="Main Menu" active="Levels" />
 
 				<div className="mb-4">
-					<Button onClick={() => setShowModal(true)}>Add Item</Button>
+					<Button
+						onClick={() => {
+							setIsEdit(false);
+							setItem({
+								type: "",
+								title: "",
+								description: "",
+								points: 0,
+								fileBuffer: null,
+								size: "",
+							});
+							setShowModal(true);
+						}}
+					>
+						Add Item
+					</Button>
 				</div>
 
 				{isLoading ? (
@@ -188,13 +231,13 @@ const ItemsPage = () => {
 													<i className="fe fe-more-vertical"></i>
 												</Dropdown.Toggle>
 												<Dropdown.Menu>
-													{/* <Dropdown.Item
+													<Dropdown.Item
 														href="#"
 														className="d-inline-flex align-items-center"
-														onClick={() => editItemHandler(diploma)}
+														onClick={() => editItemHandler(item)}
 													>
 														<i className="fe fe-edit me-2"></i> Edit
-													</Dropdown.Item> */}
+													</Dropdown.Item>
 													<Dropdown.Item
 														href="#"
 														className="d-inline-flex align-items-center"
@@ -306,7 +349,7 @@ const ItemsPage = () => {
 
 			<Modal show={showModal} onHide={() => setShowModal(false)}>
 				<Modal.Header closeButton>
-					<Modal.Title>Add Item</Modal.Title>
+					<Modal.Title>{isEdit ? "Edit Item" : "Add Item"}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<Form.Group>
@@ -411,8 +454,7 @@ const ItemsPage = () => {
 							!item.title ||
 							!item.type ||
 							!item.points ||
-							!item.description ||
-							!item.fileBuffer
+							!item.description
 						}
 					>
 						{isSubmitting ? (
@@ -423,6 +465,8 @@ const ItemsPage = () => {
 								role="status"
 								aria-hidden="true"
 							/>
+						) : isEdit ? (
+							"Edit Item"
 						) : (
 							"Add Item"
 						)}
