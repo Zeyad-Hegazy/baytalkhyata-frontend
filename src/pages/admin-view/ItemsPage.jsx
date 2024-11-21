@@ -152,7 +152,9 @@ const ItemsPage = () => {
 					type: "open",
 					payload: { message: response.data.message },
 				});
-				setItems((prevState) => [...prevState, response.data.result]);
+				if (response.data.result) {
+					setItems((prevState) => [...prevState, response.data.result]);
+				}
 			}
 		} catch (error) {
 			console.error("Submission failed", error);
