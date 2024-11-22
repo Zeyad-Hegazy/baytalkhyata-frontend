@@ -139,26 +139,14 @@ const ItemsPage = () => {
 
 		try {
 			setIsSubmitting(true);
-			if (isEdit) {
-				const response = await updateLevelItem(editItemId, { ...item });
-				dispatch({
-					type: "open",
-					payload: { message: response.data.message },
-				});
-				fetchItems();
-			} else {
-				const response = await addItemToLevel(levelId, { item });
-				dispatch({
-					type: "open",
-					payload: { message: response.data.message },
-				});
-				if (response.data.result) {
-					setItems((prevState) => [...prevState, response.data.result]);
-				}
-			}
-		} catch (error) {
-			console.error("Submission failed", error);
-		} finally {
+
+			const newItem = {
+				_id: Date.now().toString(),
+				...item,
+				isUploaded: false,
+			};
+			setItems((prevState) => [...prevState, newItem]);
+
 			setItem({
 				type: "",
 				title: "",
@@ -168,6 +156,34 @@ const ItemsPage = () => {
 				size: "",
 			});
 			setShowModal(false);
+			dispatch({
+				type: "open",
+				payload: { message: "Item is being processed in the background." },
+			});
+
+			if (isEdit) {
+				const response = await updateLevelItem(editItemId, { ...item });
+				dispatch({
+					type: "open",
+					payload: { message: response.data.message },
+				});
+				fetchItems();
+			} else {
+				const response = await addItemToLevel(levelId, { item });
+
+				setItems((prevState) =>
+					prevState.map((currentItem) =>
+						currentItem._id === newItem._id ? response.data.result : currentItem
+					)
+				);
+			}
+		} catch (error) {
+			console.error("Submission failed", error);
+			dispatch({
+				type: "open",
+				payload: { message: "Failed to submit the item. Please try again." },
+			});
+		} finally {
 			setIsSubmitting(false);
 		}
 	};
@@ -254,23 +270,27 @@ const ItemsPage = () => {
 									<Card.Body>
 										<p>
 											<strong>The {item.type}:</strong>
-											<Button
-												className="ms-3"
-												onClick={async () => {
-													try {
-														const response = await getSectionItem(item._id);
-														setItemSeciton(response.data.result);
-														setItemSectionOpned(true);
-													} catch (error) {
-														console.error(
-															"Error fetching chapter levels:",
-															error
-														);
-													}
-												}}
-											>
-												<i className="fa fa-solid fa-eye"></i>
-											</Button>
+											{item.isUploaded ? (
+												<Button
+													className="ms-3"
+													onClick={async () => {
+														try {
+															const response = await getSectionItem(item._id);
+															setItemSeciton(response.data.result);
+															setItemSectionOpned(true);
+														} catch (error) {
+															console.error(
+																"Error fetching chapter levels:",
+																error
+															);
+														}
+													}}
+												>
+													<i className="fa fa-solid fa-eye"></i>
+												</Button>
+											) : (
+												<p>Still Uploading</p>
+											)}
 										</p>
 										<p>
 											<strong>Description:</strong> {item.description}
