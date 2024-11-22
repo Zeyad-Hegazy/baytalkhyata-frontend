@@ -3,17 +3,22 @@ version: "3.8"
 services:
   byt-frontend:
     build:
-      context: ./
+      context: .
       dockerfile: Dockerfile
     container_name: byt-frontend
     ports:
-      - "8091:80"
+      - "3000:80"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=production  # Or 'production'
+      - VITE_HOST=http://109.123.247.149:5000/api/v1
+      - VITE_SOCKET=http://109.123.247.149:5000
     networks:
-      - byt-app-network
+      - byt-network
+    depends_on:
+      - byt-backend  # Ensure backend starts before frontend
+
 
 networks:
-  byt-app-network:
-    name: byt-app-network
+  byt-network:
+    name: byt-network
     driver: bridge
