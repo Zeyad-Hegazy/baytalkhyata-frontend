@@ -6,12 +6,12 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: byt-frontend
-    ports:
-      - "3000:80"
+    # ports:
+    #   - "3000:80"
     environment:
       - NODE_ENV=production  # Or 'production'
-      - VITE_HOST=http://109.123.247.149:5000/api/v1
-      - VITE_SOCKET=http://109.123.247.149:5000
+      - VITE_HOST=http://api.baytalkhyataonline.top/api/v1
+      - VITE_SOCKET=http://api.baytalkhyataonline.top
     networks:
       - byt-network
 
