@@ -14,8 +14,6 @@ services:
       - VITE_SOCKET=http://109.123.247.149:5000
     networks:
       - byt-network
-    depends_on:
-      - byt-backend  # Ensure backend starts before frontend
 
 
 networks:
