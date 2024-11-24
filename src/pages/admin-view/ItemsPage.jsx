@@ -33,6 +33,23 @@ function removeBase64Prefix(base64String) {
 	return base64String.replace(/^data:\w+\/[\w-]+;base64,/, "");
 }
 
+const getAcceptedFileTypes = (type) => {
+	switch (type) {
+		case "video":
+			return "video/*";
+		case "audio":
+			return "audio/*";
+		case "image":
+			return "image/*";
+		case "pdf":
+			return "application/pdf";
+		case "text":
+			return "text/plain";
+		default:
+			return "";
+	}
+};
+
 const ItemsPage = () => {
 	const { levelId } = useParams();
 	const [showModal, setShowModal] = useState(false);
@@ -140,27 +157,6 @@ const ItemsPage = () => {
 		try {
 			setIsSubmitting(true);
 
-			const newItem = {
-				_id: Date.now().toString(),
-				...item,
-				isUploaded: false,
-			};
-			setItems((prevState) => [...prevState, newItem]);
-
-			setItem({
-				type: "",
-				title: "",
-				description: "",
-				points: 0,
-				fileBuffer: null,
-				size: "",
-			});
-			setShowModal(false);
-			dispatch({
-				type: "open",
-				payload: { message: "Item is being processed in the background." },
-			});
-
 			if (isEdit) {
 				const response = await updateLevelItem(editItemId, { ...item });
 				dispatch({
@@ -170,12 +166,11 @@ const ItemsPage = () => {
 				fetchItems();
 			} else {
 				const response = await addItemToLevel(levelId, { item });
-
-				setItems((prevState) =>
-					prevState.map((currentItem) =>
-						currentItem._id === newItem._id ? response.data.result : currentItem
-					)
-				);
+				setItems((prevState) => [...prevState, response.data.result]);
+				dispatch({
+					type: "open",
+					payload: { message: "Item is being processed in the background." },
+				});
 			}
 		} catch (error) {
 			console.error("Submission failed", error);
@@ -185,6 +180,7 @@ const ItemsPage = () => {
 			});
 		} finally {
 			setIsSubmitting(false);
+			setShowModal(false);
 		}
 	};
 
@@ -426,7 +422,10 @@ const ItemsPage = () => {
 										isDragActive ? "bg-gray-200" : "bg-white"
 									}`}
 								>
-									<input {...getInputProps()} />
+									<input
+										{...getInputProps()}
+										accept={getAcceptedFileTypes(item.type)}
+									/>
 									{isDragActive ? (
 										<p>Drop the file here...</p>
 									) : (
