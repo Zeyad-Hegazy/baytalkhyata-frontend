@@ -131,11 +131,9 @@ const ItemsPage = () => {
 			});
 
 			reader.addEventListener("loadend", () => {
-				const base64String = reader.result;
-
 				setItem((prevItem) => ({
 					...prevItem,
-					fileBuffer: removeBase64Prefix(base64String),
+					fileBuffer: file,
 					size: formatBytes(file.size),
 				}));
 
@@ -159,17 +157,29 @@ const ItemsPage = () => {
 
 			if (isEdit) {
 				const response = await updateLevelItem(editItemId, { ...item });
+				setShowModal(false);
 				dispatch({
 					type: "open",
 					payload: { message: response.data.message },
 				});
-				fetchItems();
 			} else {
-				const response = await addItemToLevel(levelId, { item });
+				const formData = new FormData();
+				formData.append("title", item.title);
+				formData.append("type", item.type);
+				formData.append("description", item.description);
+				formData.append("points", item.points);
+
+				if (item.fileBuffer) {
+					formData.append("file", item.fileBuffer);
+					formData.append("size", formatBytes(item.fileBuffer.size));
+				}
+				const response = await addItemToLevel(levelId, formData);
+
 				setItems((prevState) => [...prevState, response.data.result]);
+				setShowModal(false);
 				dispatch({
 					type: "open",
-					payload: { message: "Item is being processed in the background." },
+					payload: { message: response.data.message },
 				});
 			}
 		} catch (error) {
@@ -180,7 +190,7 @@ const ItemsPage = () => {
 			});
 		} finally {
 			setIsSubmitting(false);
-			setShowModal(false);
+			fetchItems();
 		}
 	};
 
