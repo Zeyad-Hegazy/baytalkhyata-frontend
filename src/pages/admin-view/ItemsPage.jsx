@@ -175,8 +175,6 @@ const ItemsPage = () => {
 				}
 				const response = await addItemToLevel(levelId, formData);
 
-				setItems((prevState) => [...prevState, response.data.result]);
-				setShowModal(false);
 				dispatch({
 					type: "open",
 					payload: { message: response.data.message },
@@ -190,6 +188,7 @@ const ItemsPage = () => {
 			});
 		} finally {
 			setIsSubmitting(false);
+			setShowModal(false);
 			fetchItems();
 		}
 	};
